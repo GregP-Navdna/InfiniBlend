@@ -2,6 +2,14 @@
 
 A real-time generative art application that blends multiple shader algorithms through an intuitive GUI interface.
 
+## Video 
+
+ [![Video Demo](https://img.youtube.com/vi/JjrrPHfNPoM/hqdefault.jpg)](https://www.youtube.com/watch?v=JjrrPHfNPoM)
+
+## Live Demo
+
+[View InfiniBlend Live App](https://infiniblend-production.up.railway.app/)
+
 
 ## Features
 
