@@ -1,7 +1,7 @@
 {
-  "name": "webgl-animation",
+  "name": "infiniblend",
   "version": "1.0.0",
-  "description": "WebGL2 Generative Shader Blender",
+  "description": "InfiniBlend - WebGL2 Generative Shader Blender",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
