@@ -1,6 +1,7 @@
-# WebGL2 Generative Shader Blender
+# InfiniBlend - Generative Shader Blender
 
 A real-time generative art application that blends multiple shader algorithms through an intuitive GUI interface.
+
 
 ## Features
 
@@ -20,22 +21,55 @@ A real-time generative art application that blends multiple shader algorithms th
   - 3 built-in presets
   - Save parameters to JSON
 
-## Setup
 
-1. Clone or download this repository
-2. Start a local web server:
+## Running Locally
+
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- npm (comes with Node.js)
+
+
+### Quick Start
+
+1. **Clone the repository**:
 
    ```bash
-   python -m http.server 8000
+   git clone https://github.com/GregP-Navdna/InfiniBlend.git
+   cd InfiniBlend
    ```
 
-   or
+2. **Install dependencies**:
 
    ```bash
-   npx http-server -p 8000
+   npm install
    ```
 
-3. Open [http://localhost:8000](http://localhost:8000) in your browser
+3. **Start the development server**:
+
+   ```bash
+   npm start
+   ```
+
+4. **Open in browser**:
+   - Navigate to [http://localhost:3000](http://localhost:3000)
+   - The server will log the URL in the console
+
+
+### Alternative: Simple HTTP Server
+
+If you prefer not to use Node.js, you can still run with a simple HTTP server:
+
+```bash
+# Python 3
+python -m http.server 8000
+
+# Or using Node.js http-server
+npx http-server -p 8000
+```
+
+Then open [http://localhost:8000](http://localhost:8000) in your browser.
+
 
 ## Railway Deployment
 
@@ -74,6 +108,7 @@ This project is configured for easy deployment on Railway.app:
    - Port is automatically configured via `process.env.PORT`
    - All necessary Railway configuration is included in `railway.json`
 
+
 ## Controls
 
 - **Shader Blend Weights**: Control the mix ratio of each algorithm
@@ -84,6 +119,7 @@ This project is configured for easy deployment on Railway.app:
   - Preset 1-3: Load predefined beautiful combinations
   - Save JSON: Export current parameters
 
+
 ## Architecture
 
 - **main.js**: Three.js setup, GUI management, animation loop
@@ -93,17 +129,20 @@ This project is configured for easy deployment on Railway.app:
   - `common.glsl`: Shared utility functions
   - Individual `.frag` files for each algorithm
 
+
 ## Performance
 
 - Optimized for 60 FPS on mid-range GPUs
 - Single-pass rendering with weighted blending
 - Shared noise functions to reduce computation
 
+
 ## Browser Compatibility
 
 - Chrome (recommended)
 - Firefox
 - Safari (desktop)
+
 
 ## Algorithm Credits
 
@@ -112,6 +151,7 @@ This project is configured for easy deployment on Railway.app:
 - Reaction-Diffusion: Alan Turing, Gray-Scott model
 - Cellular Automata: John Conway
 - Fractal algorithms: Benoit Mandelbrot, Gaston Julia
+
 
 ## License
 
