@@ -24,14 +24,55 @@ A real-time generative art application that blends multiple shader algorithms th
 
 1. Clone or download this repository
 2. Start a local web server:
+
    ```bash
    python -m http.server 8000
    ```
+
    or
+
    ```bash
    npx http-server -p 8000
    ```
-3. Open http://localhost:8000 in your browser
+
+3. Open [http://localhost:8000](http://localhost:8000) in your browser
+
+## Railway Deployment
+
+This project is configured for easy deployment on Railway.app:
+
+1. **Prerequisites**:
+   - A Railway account (sign up at [railway.app](https://railway.app))
+   - Git installed on your machine
+
+2. **Deploy to Railway**:
+
+   ```bash
+   # Install dependencies locally first
+   npm install
+   
+   # Initialize git if not already done
+   git init
+   git add .
+   git commit -m "Initial commit"
+   
+   # Deploy using Railway CLI
+   npm install -g @railway/cli
+   railway login
+   railway link
+   railway up
+   ```
+
+3. **Alternative: Deploy via GitHub**:
+   - Push your code to a GitHub repository
+   - Connect your GitHub account to Railway
+   - Create a new project and select your repository
+   - Railway will automatically detect the configuration and deploy
+
+4. **Configuration**:
+   - The project uses Node.js with Express to serve static files
+   - Port is automatically configured via `process.env.PORT`
+   - All necessary Railway configuration is included in `railway.json`
 
 ## Controls
 
