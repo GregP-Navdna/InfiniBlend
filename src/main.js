@@ -6,7 +6,9 @@ import { guiConfig } from './guiConfig.js';
 class GenerativeShaderApp {
     constructor() {
         this.clock = new THREE.Clock();
+        this.elapsedTime = 0;
         this.params = this.initParams();
+        this.autoAnimateIncrements = {};
         this.init();
     }
 
@@ -145,7 +147,11 @@ class GenerativeShaderApp {
             timeScale: 1.0,
             brightness: 1.0,
             contrast: 1.0,
-            saturation: 1.0
+            saturation: 1.0,
+            
+            // Auto-animation
+            autoAnimate: false,
+            autoAnimateSpeed: 1.0
         };
         
         return params;
@@ -182,6 +188,9 @@ class GenerativeShaderApp {
 
         // Setup GUI
         this.setupGUI();
+        
+        // Initialize auto-animation increments
+        this.initializeAutoAnimateIncrements();
 
         // Handle resize
         window.addEventListener('resize', () => this.onWindowResize());
@@ -311,7 +320,10 @@ class GenerativeShaderApp {
             u_timeScale: { value: this.params.timeScale },
             u_brightness: { value: this.params.brightness },
             u_contrast: { value: this.params.contrast },
-            u_saturation: { value: this.params.saturation }
+            u_saturation: { value: this.params.saturation },
+            
+            u_autoAnimate: { value: this.params.autoAnimate ? 1.0 : 0.0 },
+            u_autoAnimateSpeed: { value: this.params.autoAnimateSpeed }
         };
         
         return uniforms;
@@ -393,6 +405,14 @@ class GenerativeShaderApp {
         globalFolder.add(this.params, 'brightness', 0, 2).onChange(v => this.material.uniforms.u_brightness.value = v);
         globalFolder.add(this.params, 'contrast', 0, 2).onChange(v => this.material.uniforms.u_contrast.value = v);
         globalFolder.add(this.params, 'saturation', 0, 2).onChange(v => this.material.uniforms.u_saturation.value = v);
+        globalFolder.add(this.params, 'autoAnimate').name('Auto-Animation On/Off').onChange(v => {
+            this.material.uniforms.u_autoAnimate.value = v ? 1.0 : 0.0;
+            if (v) {
+                // Regenerate random increments when turning on
+                this.initializeAutoAnimateIncrements();
+            }
+        });
+        globalFolder.add(this.params, 'autoAnimateSpeed', 0, 5).name('Auto-Animation Speed').onChange(v => this.material.uniforms.u_autoAnimateSpeed.value = v);
         
         // Utility buttons
         const utilsFolder = this.gui.addFolder('Utils');
@@ -428,6 +448,30 @@ class GenerativeShaderApp {
         }, 100);
         
         utilsFolder.open();
+    }
+
+    initializeAutoAnimateIncrements() {
+        // Generate random increments for all parameters
+        const paramKeys = Object.keys(this.params);
+        const excludedParams = ['autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation'];
+        
+        paramKeys.forEach(key => {
+            if (!excludedParams.includes(key)) {
+                // Random increment between -0.01 and 0.01, scaled by parameter range
+                const baseIncrement = (Math.random() - 0.5) * 0.02;
+                
+                // Scale increment based on typical parameter range
+                let scale = 1.0;
+                if (key.includes('Weight')) scale = 0.5; // Slower for weights
+                if (key.includes('Scale') || key.includes('Zoom')) scale = 0.1; // Much slower for scale params
+                if (key.includes('Speed')) scale = 0.5;
+                if (key.includes('Freq')) scale = 0.2;
+                if (key.includes('Center')) scale = 0.05; // Very slow for position params
+                if (key.includes('Offset')) scale = 0.1;
+                
+                this.autoAnimateIncrements[key] = baseIncrement * scale;
+            }
+        });
     }
 
     randomize() {
@@ -603,14 +647,58 @@ class GenerativeShaderApp {
     animate() {
         requestAnimationFrame(() => this.animate());
         
-        const elapsedTime = this.clock.getElapsedTime();
-        this.material.uniforms.u_time.value = elapsedTime;
+        // Get delta time once
+        const deltaTime = this.clock.getDelta();
         
-        // Update fractal offset uniform
+        // Update elapsed time
+        this.elapsedTime += deltaTime * this.params.timeScale;
+        
+        // Update time uniform
+        this.material.uniforms.u_time.value = this.elapsedTime;
+        
+        // Update fractal offset
         this.material.uniforms.u_fractalOffset.value.set(
             this.params.fractalOffsetX,
             this.params.fractalOffsetY
         );
+        
+        // Auto-animate parameters
+        if (this.params.autoAnimate) {
+            const excludedParams = ['autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation'];
+            
+            Object.keys(this.params).forEach(key => {
+                if (!excludedParams.includes(key) && this.autoAnimateIncrements[key] !== undefined) {
+                    const increment = this.autoAnimateIncrements[key] * deltaTime * 60; // Frame-independent
+                    let value = this.params[key] + increment * this.params.autoAnimateSpeed;
+                    
+                    // Find the controller to get min/max bounds
+                    const controller = this.gui.controllersRecursive().find(c => c.property === key);
+                    if (controller && controller._min !== undefined && controller._max !== undefined) {
+                        // Bounce off boundaries
+                        if (value > controller._max || value < controller._min) {
+                            this.autoAnimateIncrements[key] *= -1; // Reverse direction
+                            value = Math.max(controller._min, Math.min(controller._max, value));
+                        }
+                    } else if (typeof this.params[key] === 'boolean') {
+                        // Skip boolean parameters
+                        return;
+                    }
+                    
+                    this.params[key] = value;
+                    
+                    // Update GUI
+                    if (controller) {
+                        controller.setValue(value);
+                    }
+                    
+                    // Update uniform
+                    const uniformKey = `u_${key}`;
+                    if (this.material.uniforms[uniformKey]) {
+                        this.material.uniforms[uniformKey].value = value;
+                    }
+                }
+            });
+        }
         
         this.renderer.render(this.scene, this.camera);
     }
