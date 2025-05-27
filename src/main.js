@@ -475,6 +475,11 @@ class GenerativeShaderApp {
     }
 
     randomize() {
+        // Regenerate auto-animation increments
+        if (this.params.autoAnimate) {
+            this.initializeAutoAnimateIncrements();
+        }
+        
         // Randomize boolean toggles
         const booleanParams = [
             'fbmEnabled', 'voronoiEnabled', 'reactionEnabled', 
