@@ -42,5 +42,71 @@ export const guiConfig = {
         fractalFolder.add(params, 'fractalOffsetX', -2, 2).onChange(v => uniforms.u_fractalOffset.value.x = v);
         fractalFolder.add(params, 'fractalOffsetY', -2, 2).onChange(v => uniforms.u_fractalOffset.value.y = v);
         fractalFolder.add(params, 'fractalColor', 0, 1).onChange(v => uniforms.u_fractalColor.value = v);
+        
+        // Curl Flow parameters
+        const curlFlowFolder = gui.addFolder('Curl Flow');
+        curlFlowFolder.add(params, 'flowScale', 0.5, 10).onChange(v => uniforms.u_flowScale.value = v);
+        curlFlowFolder.add(params, 'advectSpeed', 0, 2).onChange(v => uniforms.u_advectSpeed.value = v);
+        curlFlowFolder.add(params, 'turbulence', 0, 3).onChange(v => uniforms.u_turbulence.value = v);
+        
+        // Metaballs parameters
+        const metaballsFolder = gui.addFolder('Metaballs');
+        metaballsFolder.add(params, 'ballCount', 1, 8, 1).onChange(v => uniforms.u_ballCount.value = v);
+        metaballsFolder.add(params, 'metaRadius', 0.1, 1.5).onChange(v => uniforms.u_metaRadius.value = v);
+        metaballsFolder.add(params, 'metaThreshold', 0.5, 2).onChange(v => uniforms.u_metaThreshold.value = v);
+        metaballsFolder.add(params, 'metaSpeed', 0, 2).onChange(v => uniforms.u_metaSpeed.value = v);
+        
+        // Superformula parameters
+        const superformulaFolder = gui.addFolder('Superformula');
+        superformulaFolder.add(params, 'superM', 1, 20).onChange(v => uniforms.u_superM.value = v);
+        superformulaFolder.add(params, 'superN1', 0.1, 5).onChange(v => uniforms.u_superN1.value = v);
+        superformulaFolder.add(params, 'superN2', 0.1, 5).onChange(v => uniforms.u_superN2.value = v);
+        superformulaFolder.add(params, 'superN3', 0.1, 5).onChange(v => uniforms.u_superN3.value = v);
+        superformulaFolder.add(params, 'shapeMix', 0, 1).onChange(v => uniforms.u_shapeMix.value = v);
+        
+        // Truchet parameters
+        const truchetFolder = gui.addFolder('Truchet');
+        truchetFolder.add(params, 'tileScale', 2, 30).onChange(v => uniforms.u_tileScale.value = v);
+        truchetFolder.add(params, 'rotationSeed', -10, 10).onChange(v => uniforms.u_rotationSeed.value = v);
+        truchetFolder.add(params, 'lineWidth', 0.01, 0.2).onChange(v => uniforms.u_lineWidth.value = v);
+        
+        // Plasma parameters
+        const plasmaFolder = gui.addFolder('Plasma');
+        plasmaFolder.add(params, 'plasmaFreq', 1, 10).onChange(v => uniforms.u_plasmaFreq.value = v);
+        plasmaFolder.add(params, 'plasmaSpeed', 0, 2).onChange(v => uniforms.u_plasmaSpeed.value = v);
+        plasmaFolder.add(params, 'colorShift', 0, 1).onChange(v => uniforms.u_colorShift.value = v);
+        
+        // Moire parameters
+        const moireFolder = gui.addFolder('Moire');
+        moireFolder.add(params, 'lineDensity', 5, 50).onChange(v => uniforms.u_lineDensity.value = v);
+        moireFolder.add(params, 'angleOffset', 0, 3.14).onChange(v => uniforms.u_angleOffset.value = v);
+        moireFolder.add(params, 'waveSpeed', 0, 1).onChange(v => uniforms.u_waveSpeed.value = v);
+        
+        // Phyllotaxis parameters
+        const phyllotaxisFolder = gui.addFolder('Phyllotaxis');
+        phyllotaxisFolder.add(params, 'pointCount', 50, 500, 1).onChange(v => uniforms.u_pointCount.value = v);
+        phyllotaxisFolder.add(params, 'spiralScale', 0.1, 3).onChange(v => uniforms.u_spiralScale.value = v);
+        phyllotaxisFolder.add(params, 'rotateSpeed', -0.5, 0.5).onChange(v => uniforms.u_rotateSpeed.value = v);
+        
+        // DLA parameters
+        const dlaFolder = gui.addFolder('DLA');
+        dlaFolder.add(params, 'spawnRate', 0, 3).onChange(v => uniforms.u_spawnRate.value = v);
+        dlaFolder.add(params, 'stickProb', 0, 1).onChange(v => uniforms.u_stickProb.value = v);
+        dlaFolder.add(params, 'growthSpeed', 0, 2).onChange(v => uniforms.u_growthSpeed.value = v);
+        
+        // Mandelbrot parameters
+        const mandelbrotFolder = gui.addFolder('Mandelbrot');
+        mandelbrotFolder.add(params, 'mandelbrotZoom', 0.1, 3).onChange(v => uniforms.u_mandelbrotZoom.value = v);
+        mandelbrotFolder.add(params, 'mandelbrotCenterX', -2, 2).onChange(v => uniforms.u_mandelbrotCenter.value.x = v);
+        mandelbrotFolder.add(params, 'mandelbrotCenterY', -2, 2).onChange(v => uniforms.u_mandelbrotCenter.value.y = v);
+        mandelbrotFolder.add(params, 'maxIter', 10, 256, 1).onChange(v => uniforms.u_maxIter.value = v);
+        mandelbrotFolder.add(params, 'colorCycle', 0, 1).onChange(v => uniforms.u_colorCycle.value = v);
+        
+        // Hex Relax parameters
+        const hexRelaxFolder = gui.addFolder('Hex Relax');
+        hexRelaxFolder.add(params, 'hexScale', 1, 15).onChange(v => uniforms.u_hexScale.value = v);
+        hexRelaxFolder.add(params, 'relaxSteps', 0, 5, 1).onChange(v => uniforms.u_relaxSteps.value = v);
+        hexRelaxFolder.add(params, 'jitter', 0, 0.5).onChange(v => uniforms.u_jitter.value = v);
+        hexRelaxFolder.add(params, 'blendSharpness', 0.1, 3).onChange(v => uniforms.u_blendSharpness.value = v);
     }
 };

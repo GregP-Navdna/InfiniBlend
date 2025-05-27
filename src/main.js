@@ -19,6 +19,16 @@ class GenerativeShaderApp {
             cellularEnabled: false,
             kaleidoEnabled: true,
             fractalEnabled: false,
+            curlFlowEnabled: false,
+            metaballsEnabled: false,
+            superformulaEnabled: false,
+            truchetEnabled: false,
+            plasmaEnabled: false,
+            moireEnabled: false,
+            phyllotaxisEnabled: false,
+            dlaEnabled: false,
+            mandelbrotEnabled: false,
+            hexRelaxEnabled: false,
             
             // Master blend weights
             fbmWeight: 0.5,
@@ -27,6 +37,16 @@ class GenerativeShaderApp {
             cellularWeight: 0.0,
             kaleidoWeight: 0.2,
             fractalWeight: 0.0,
+            curlFlowWeight: 0.0,
+            metaballsWeight: 0.0,
+            superformulaWeight: 0.0,
+            truchetWeight: 0.0,
+            plasmaWeight: 0.0,
+            moireWeight: 0.0,
+            phyllotaxisWeight: 0.0,
+            dlaWeight: 0.0,
+            mandelbrotWeight: 0.0,
+            hexRelaxWeight: 0.0,
             
             // FBM parameters
             fbmScale: 2.0,
@@ -65,6 +85,62 @@ class GenerativeShaderApp {
             fractalOffsetY: 0.0,
             fractalColor: 0.5,
             
+            // Curl Flow parameters
+            flowScale: 3.0,
+            advectSpeed: 0.5,
+            turbulence: 1.0,
+            
+            // Metaballs parameters
+            ballCount: 5,
+            metaRadius: 0.5,
+            metaThreshold: 1.0,
+            metaSpeed: 0.5,
+            
+            // Superformula parameters
+            superM: 6,
+            superN1: 1.0,
+            superN2: 1.0,
+            superN3: 1.0,
+            shapeMix: 0.0,
+            
+            // Truchet parameters
+            tileScale: 10.0,
+            rotationSeed: 0.0,
+            lineWidth: 0.05,
+            
+            // Plasma parameters
+            plasmaFreq: 3.0,
+            plasmaSpeed: 0.5,
+            colorShift: 0.0,
+            
+            // Moire parameters
+            lineDensity: 20.0,
+            angleOffset: 0.1,
+            waveSpeed: 0.3,
+            
+            // Phyllotaxis parameters
+            pointCount: 200,
+            spiralScale: 1.0,
+            rotateSpeed: 0.1,
+            
+            // DLA parameters
+            spawnRate: 1.0,
+            stickProb: 0.8,
+            growthSpeed: 0.5,
+            
+            // Mandelbrot parameters
+            mandelbrotZoom: 0.5,
+            mandelbrotCenterX: -0.7,
+            mandelbrotCenterY: 0.0,
+            maxIter: 100,
+            colorCycle: 0.0,
+            
+            // Hex Relax parameters
+            hexScale: 5.0,
+            relaxSteps: 3,
+            jitter: 0.1,
+            blendSharpness: 1.0,
+            
             // Global parameters
             timeScale: 1.0,
             brightness: 1.0,
@@ -81,7 +157,7 @@ class GenerativeShaderApp {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
-
+        
         // Setup scene and camera
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -91,10 +167,12 @@ class GenerativeShaderApp {
         await this.shaderComposer.loadShaders();
         
         // Create material with composed shader
+        const composedShader = this.shaderComposer.getComposedShader();
+        
         this.material = new THREE.ShaderMaterial({
             uniforms: this.createUniforms(),
             vertexShader: this.getVertexShader(),
-            fragmentShader: this.shaderComposer.getComposedShader()
+            fragmentShader: composedShader
         });
 
         // Create full-screen quad
@@ -125,14 +203,34 @@ class GenerativeShaderApp {
             u_cellularEnabled: { value: this.params.cellularEnabled ? 1.0 : 0.0 },
             u_kaleidoEnabled: { value: this.params.kaleidoEnabled ? 1.0 : 0.0 },
             u_fractalEnabled: { value: this.params.fractalEnabled ? 1.0 : 0.0 },
+            u_curlFlowEnabled: { value: this.params.curlFlowEnabled ? 1.0 : 0.0 },
+            u_metaballsEnabled: { value: this.params.metaballsEnabled ? 1.0 : 0.0 },
+            u_superformulaEnabled: { value: this.params.superformulaEnabled ? 1.0 : 0.0 },
+            u_truchetEnabled: { value: this.params.truchetEnabled ? 1.0 : 0.0 },
+            u_plasmaEnabled: { value: this.params.plasmaEnabled ? 1.0 : 0.0 },
+            u_moireEnabled: { value: this.params.moireEnabled ? 1.0 : 0.0 },
+            u_phyllotaxisEnabled: { value: this.params.phyllotaxisEnabled ? 1.0 : 0.0 },
+            u_dlaEnabled: { value: this.params.dlaEnabled ? 1.0 : 0.0 },
+            u_mandelbrotEnabled: { value: this.params.mandelbrotEnabled ? 1.0 : 0.0 },
+            u_hexRelaxEnabled: { value: this.params.hexRelaxEnabled ? 1.0 : 0.0 },
             
-            // Master weights
+            // Master blend weights
             u_fbmWeight: { value: this.params.fbmWeight },
             u_voronoiWeight: { value: this.params.voronoiWeight },
             u_reactionWeight: { value: this.params.reactionWeight },
             u_cellularWeight: { value: this.params.cellularWeight },
             u_kaleidoWeight: { value: this.params.kaleidoWeight },
             u_fractalWeight: { value: this.params.fractalWeight },
+            u_curlFlowWeight: { value: this.params.curlFlowWeight },
+            u_metaballsWeight: { value: this.params.metaballsWeight },
+            u_superformulaWeight: { value: this.params.superformulaWeight },
+            u_truchetWeight: { value: this.params.truchetWeight },
+            u_plasmaWeight: { value: this.params.plasmaWeight },
+            u_moireWeight: { value: this.params.moireWeight },
+            u_phyllotaxisWeight: { value: this.params.phyllotaxisWeight },
+            u_dlaWeight: { value: this.params.dlaWeight },
+            u_mandelbrotWeight: { value: this.params.mandelbrotWeight },
+            u_hexRelaxWeight: { value: this.params.hexRelaxWeight },
             
             // Algorithm-specific uniforms
             u_fbmScale: { value: this.params.fbmScale },
@@ -164,6 +262,51 @@ class GenerativeShaderApp {
             u_fractalZoom: { value: this.params.fractalZoom },
             u_fractalOffset: { value: new THREE.Vector2(this.params.fractalOffsetX, this.params.fractalOffsetY) },
             u_fractalColor: { value: this.params.fractalColor },
+            
+            u_flowScale: { value: this.params.flowScale },
+            u_advectSpeed: { value: this.params.advectSpeed },
+            u_turbulence: { value: this.params.turbulence },
+            
+            u_ballCount: { value: this.params.ballCount },
+            u_metaRadius: { value: this.params.metaRadius },
+            u_metaThreshold: { value: this.params.metaThreshold },
+            u_metaSpeed: { value: this.params.metaSpeed },
+            
+            u_superM: { value: this.params.superM },
+            u_superN1: { value: this.params.superN1 },
+            u_superN2: { value: this.params.superN2 },
+            u_superN3: { value: this.params.superN3 },
+            u_shapeMix: { value: this.params.shapeMix },
+            
+            u_tileScale: { value: this.params.tileScale },
+            u_rotationSeed: { value: this.params.rotationSeed },
+            u_lineWidth: { value: this.params.lineWidth },
+            
+            u_plasmaFreq: { value: this.params.plasmaFreq },
+            u_plasmaSpeed: { value: this.params.plasmaSpeed },
+            u_colorShift: { value: this.params.colorShift },
+            
+            u_lineDensity: { value: this.params.lineDensity },
+            u_angleOffset: { value: this.params.angleOffset },
+            u_waveSpeed: { value: this.params.waveSpeed },
+            
+            u_pointCount: { value: this.params.pointCount },
+            u_spiralScale: { value: this.params.spiralScale },
+            u_rotateSpeed: { value: this.params.rotateSpeed },
+            
+            u_spawnRate: { value: this.params.spawnRate },
+            u_stickProb: { value: this.params.stickProb },
+            u_growthSpeed: { value: this.params.growthSpeed },
+            
+            u_mandelbrotZoom: { value: this.params.mandelbrotZoom },
+            u_mandelbrotCenter: { value: new THREE.Vector2(this.params.mandelbrotCenterX, this.params.mandelbrotCenterY) },
+            u_maxIter: { value: this.params.maxIter },
+            u_colorCycle: { value: this.params.colorCycle },
+            
+            u_hexScale: { value: this.params.hexScale },
+            u_relaxSteps: { value: this.params.relaxSteps },
+            u_jitter: { value: this.params.jitter },
+            u_blendSharpness: { value: this.params.blendSharpness },
             
             u_timeScale: { value: this.params.timeScale },
             u_brightness: { value: this.params.brightness },
@@ -209,6 +352,36 @@ class GenerativeShaderApp {
         blendFolder.add(this.params, 'fractalEnabled').name('Fractal On/Off').onChange(v => this.material.uniforms.u_fractalEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'fractalWeight', 0, 1).name('Fractal Weight').onChange(v => this.material.uniforms.u_fractalWeight.value = v);
         
+        blendFolder.add(this.params, 'curlFlowEnabled').name('Curl Flow On/Off').onChange(v => this.material.uniforms.u_curlFlowEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'curlFlowWeight', 0, 1).name('Curl Flow Weight').onChange(v => this.material.uniforms.u_curlFlowWeight.value = v);
+        
+        blendFolder.add(this.params, 'metaballsEnabled').name('Metaballs On/Off').onChange(v => this.material.uniforms.u_metaballsEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'metaballsWeight', 0, 1).name('Metaballs Weight').onChange(v => this.material.uniforms.u_metaballsWeight.value = v);
+        
+        blendFolder.add(this.params, 'superformulaEnabled').name('Superformula On/Off').onChange(v => this.material.uniforms.u_superformulaEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'superformulaWeight', 0, 1).name('Superformula Weight').onChange(v => this.material.uniforms.u_superformulaWeight.value = v);
+        
+        blendFolder.add(this.params, 'truchetEnabled').name('Truchet On/Off').onChange(v => this.material.uniforms.u_truchetEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'truchetWeight', 0, 1).name('Truchet Weight').onChange(v => this.material.uniforms.u_truchetWeight.value = v);
+        
+        blendFolder.add(this.params, 'plasmaEnabled').name('Plasma On/Off').onChange(v => this.material.uniforms.u_plasmaEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'plasmaWeight', 0, 1).name('Plasma Weight').onChange(v => this.material.uniforms.u_plasmaWeight.value = v);
+        
+        blendFolder.add(this.params, 'moireEnabled').name('Moire On/Off').onChange(v => this.material.uniforms.u_moireEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'moireWeight', 0, 1).name('Moire Weight').onChange(v => this.material.uniforms.u_moireWeight.value = v);
+        
+        blendFolder.add(this.params, 'phyllotaxisEnabled').name('Phyllotaxis On/Off').onChange(v => this.material.uniforms.u_phyllotaxisEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'phyllotaxisWeight', 0, 1).name('Phyllotaxis Weight').onChange(v => this.material.uniforms.u_phyllotaxisWeight.value = v);
+        
+        blendFolder.add(this.params, 'dlaEnabled').name('DLA On/Off').onChange(v => this.material.uniforms.u_dlaEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'dlaWeight', 0, 1).name('DLA Weight').onChange(v => this.material.uniforms.u_dlaWeight.value = v);
+        
+        blendFolder.add(this.params, 'mandelbrotEnabled').name('Mandelbrot On/Off').onChange(v => this.material.uniforms.u_mandelbrotEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'mandelbrotWeight', 0, 1).name('Mandelbrot Weight').onChange(v => this.material.uniforms.u_mandelbrotWeight.value = v);
+        
+        blendFolder.add(this.params, 'hexRelaxEnabled').name('Hex Relax On/Off').onChange(v => this.material.uniforms.u_hexRelaxEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'hexRelaxWeight', 0, 1).name('Hex Relax Weight').onChange(v => this.material.uniforms.u_hexRelaxWeight.value = v);
+        
         blendFolder.open();
         
         // Algorithm-specific parameters
@@ -227,6 +400,9 @@ class GenerativeShaderApp {
         utilsFolder.add({ preset1: () => this.loadPreset(0) }, 'preset1').name('Preset 1');
         utilsFolder.add({ preset2: () => this.loadPreset(1) }, 'preset2').name('Preset 2');
         utilsFolder.add({ preset3: () => this.loadPreset(2) }, 'preset3').name('Preset 3');
+        utilsFolder.add({ preset4: () => this.loadPreset(3) }, 'preset4').name('Preset 4');
+        utilsFolder.add({ preset5: () => this.loadPreset(4) }, 'preset5').name('Preset 5');
+        utilsFolder.add({ preset6: () => this.loadPreset(5) }, 'preset6').name('Preset 6');
         utilsFolder.add({ save: () => this.saveParams() }, 'save').name('Save JSON');
         
         // Add GitHub link with icon
@@ -258,7 +434,11 @@ class GenerativeShaderApp {
         // Randomize boolean toggles
         const booleanParams = [
             'fbmEnabled', 'voronoiEnabled', 'reactionEnabled', 
-            'cellularEnabled', 'kaleidoEnabled', 'fractalEnabled'
+            'cellularEnabled', 'kaleidoEnabled', 'fractalEnabled',
+            'curlFlowEnabled', 'metaballsEnabled', 'superformulaEnabled',
+            'truchetEnabled', 'plasmaEnabled', 'moireEnabled',
+            'phyllotaxisEnabled', 'dlaEnabled', 'mandelbrotEnabled',
+            'hexRelaxEnabled'
         ];
         
         booleanParams.forEach(key => {
@@ -288,36 +468,109 @@ class GenerativeShaderApp {
 
     loadPreset(index) {
         const presets = [
-            // Preset 1: Dreamy Flow
+            // Preset 1: Dreamy Flow (Original)
             {
                 fbmEnabled: true, voronoiEnabled: true, reactionEnabled: false, 
                 cellularEnabled: false, kaleidoEnabled: false, fractalEnabled: false,
+                curlFlowEnabled: false, metaballsEnabled: false, superformulaEnabled: false,
+                truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
+                phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
+                hexRelaxEnabled: false,
                 fbmWeight: 0.7, voronoiWeight: 0.3, reactionWeight: 0, cellularWeight: 0,
-                kaleidoWeight: 0, fractalWeight: 0, fbmScale: 1.5, fbmSpeed: 0.3,
-                fbmOctaves: 5, fbmHueShift: 0.2, voronoiScale: 3, voronoiSpeed: 0.1,
+                kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
+                superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
+                phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                fbmScale: 1.5, fbmSpeed: 0.3, fbmOctaves: 5, fbmHueShift: 0.2,
+                voronoiScale: 3, voronoiSpeed: 0.1,
                 timeScale: 0.8, brightness: 1.1, contrast: 1.2, saturation: 0.9
             },
-            // Preset 2: Kaleidoscope Dreams
+            // Preset 2: Kaleidoscope Dreams (Original)
             {
                 fbmEnabled: true, voronoiEnabled: false, reactionEnabled: false, 
                 cellularEnabled: false, kaleidoEnabled: true, fractalEnabled: false,
+                curlFlowEnabled: false, metaballsEnabled: false, superformulaEnabled: false,
+                truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
+                phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
+                hexRelaxEnabled: false,
                 fbmWeight: 0.2, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
-                kaleidoWeight: 0.8, fractalWeight: 0, kaleidoSegments: 8, kaleidoRotation: 0.2,
-                kaleidoZoom: 1.5, fbmScale: 0.5, timeScale: 1.2, brightness: 1.2,
+                kaleidoWeight: 0.8, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
+                superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
+                phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                kaleidoSegments: 8, kaleidoRotation: 0.2, kaleidoZoom: 1.5,
+                fbmScale: 0.5, timeScale: 1.2, brightness: 1.2,
                 contrast: 1.3, saturation: 1.1
             },
-            // Preset 3: Fractal Reaction
+            // Preset 3: Fractal Reaction (Original)
             {
                 fbmEnabled: false, voronoiEnabled: false, reactionEnabled: true, 
                 cellularEnabled: false, kaleidoEnabled: false, fractalEnabled: true,
+                curlFlowEnabled: false, metaballsEnabled: false, superformulaEnabled: false,
+                truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
+                phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
+                hexRelaxEnabled: false,
                 fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0.6, cellularWeight: 0,
-                kaleidoWeight: 0, fractalWeight: 0.4, reactionFeed: 0.055, reactionKill: 0.062,
+                kaleidoWeight: 0, fractalWeight: 0.4, curlFlowWeight: 0, metaballsWeight: 0,
+                superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
+                phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                reactionFeed: 0.055, reactionKill: 0.062,
                 fractalIterations: 80, fractalZoom: 0.8, timeScale: 0.5, brightness: 1.0,
                 contrast: 1.5, saturation: 0.8
+            },
+            // Preset 4: Flowing Metaballs
+            {
+                fbmEnabled: false, voronoiEnabled: false, reactionEnabled: false, 
+                cellularEnabled: false, kaleidoEnabled: false, fractalEnabled: false,
+                curlFlowEnabled: true, metaballsEnabled: true, superformulaEnabled: false,
+                truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
+                phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
+                hexRelaxEnabled: false,
+                fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
+                kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0.6, metaballsWeight: 0.4,
+                superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
+                phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                flowScale: 3.0, advectSpeed: 0.8, turbulence: 1.5,
+                ballCount: 5, metaRadius: 0.8, metaThreshold: 1.0, metaSpeed: 0.5,
+                timeScale: 1.0, brightness: 1.2, contrast: 1.1, saturation: 1.3
+            },
+            // Preset 5: Geometric Patterns
+            {
+                fbmEnabled: false, voronoiEnabled: false, reactionEnabled: false, 
+                cellularEnabled: false, kaleidoEnabled: false, fractalEnabled: false,
+                curlFlowEnabled: false, metaballsEnabled: false, superformulaEnabled: true,
+                truchetEnabled: true, plasmaEnabled: false, moireEnabled: true,
+                phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
+                hexRelaxEnabled: false,
+                fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
+                kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
+                superformulaWeight: 0.3, truchetWeight: 0.4, plasmaWeight: 0, moireWeight: 0.3,
+                phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                superM: 6, superN1: 1.0, superN2: 1.0, superN3: 1.0, shapeMix: 0.5,
+                tileScale: 10, rotationSeed: 2.5, lineWidth: 0.05,
+                lineDensity: 20, angleOffset: 0.785, waveSpeed: 0.3,
+                timeScale: 0.7, brightness: 1.1, contrast: 1.3, saturation: 0.8
+            },
+            // Preset 6: Cosmic Fractals
+            {
+                fbmEnabled: false, voronoiEnabled: false, reactionEnabled: false, 
+                cellularEnabled: false, kaleidoEnabled: false, fractalEnabled: false,
+                curlFlowEnabled: false, metaballsEnabled: false, superformulaEnabled: false,
+                truchetEnabled: false, plasmaEnabled: true, moireEnabled: false,
+                phyllotaxisEnabled: true, dlaEnabled: false, mandelbrotEnabled: true,
+                hexRelaxEnabled: false,
+                fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
+                kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
+                superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0.3, moireWeight: 0,
+                phyllotaxisWeight: 0.3, dlaWeight: 0, mandelbrotWeight: 0.4, hexRelaxWeight: 0,
+                plasmaFreq: 3.0, plasmaSpeed: 0.5, colorShift: 0.6,
+                pointCount: 200, spiralScale: 0.8, rotateSpeed: 0.1,
+                mandelbrotZoom: 1.5, mandelbrotCenterX: -0.5, mandelbrotCenterY: 0,
+                maxIter: 100, colorCycle: 0.3,
+                timeScale: 0.6, brightness: 1.2, contrast: 1.4, saturation: 1.2
             }
         ];
         
-        const preset = presets[index];
+        // Use modulo to cycle through presets if index is greater than original 3
+        const preset = presets[index % presets.length];
         if (preset) {
             Object.keys(preset).forEach(key => {
                 if (this.params.hasOwnProperty(key)) {

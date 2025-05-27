@@ -2,25 +2,32 @@
 
 A real-time generative art application that blends multiple shader algorithms through an intuitive GUI interface.
 
-
 ## Features
 
-- **6 Generative Algorithms**:
+- **16 Generative Algorithms**:
   - FBM (Fractal Brownian Motion) noise layers
   - Voronoi diagrams with animated cells
   - Reaction-Diffusion (Gray-Scott model)
   - Cellular Automata (Conway's Game of Life variant)
   - Kaleidoscopic transformations
   - Julia set fractals with animated parameters
-
+  - Curl-noise flow field with drifting dye
+  - Distance-field metaballs (soft blobs merging)
+  - Animated superformula shapes morphing over time
+  - Truchet tile patterns with rotation randomness
+  - Classic sine-based plasma with palette cycling
+  - Moiré interference rings & grids
+  - Phyllotactic spiral particles (golden-angle)
+  - Diffusion-Limited Aggregation growth simulation
+  - Distance-estimator Mandelbrot zoom
+  - Lloyd-relaxed hex tiling morphing
 - **Interactive Controls**:
   - Master blend weight for each algorithm (0-1)
   - Algorithm-specific parameters
   - Global adjustments (brightness, contrast, saturation)
   - Randomize button for instant variations
-  - 3 built-in presets
+  - 6 built-in presets
   - Save parameters to JSON
-
 
 ## Running Locally
 
@@ -28,7 +35,6 @@ A real-time generative art application that blends multiple shader algorithms th
 
 - Node.js (version 18 or higher)
 - npm (comes with Node.js)
-
 
 ### Quick Start
 
@@ -55,7 +61,6 @@ A real-time generative art application that blends multiple shader algorithms th
    - Navigate to [http://localhost:3000](http://localhost:3000)
    - The server will log the URL in the console
 
-
 ### Alternative: Simple HTTP Server
 
 If you prefer not to use Node.js, you can still run with a simple HTTP server:
@@ -67,9 +72,6 @@ python -m http.server 8000
 # Or using Node.js http-server
 npx http-server -p 8000
 ```
-
-Then open [http://localhost:8000](http://localhost:8000) in your browser.
-
 
 ## Railway Deployment
 
@@ -108,7 +110,6 @@ This project is configured for easy deployment on Railway.app:
    - Port is automatically configured via `process.env.PORT`
    - All necessary Railway configuration is included in `railway.json`
 
-
 ## Controls
 
 - **Shader Blend Weights**: Control the mix ratio of each algorithm
@@ -116,9 +117,19 @@ This project is configured for easy deployment on Railway.app:
 - **Global Settings**: Adjust overall appearance
 - **Utils**:
   - Randomize: Generate random parameter combinations
-  - Preset 1-3: Load predefined beautiful combinations
+  - Preset 1-6: Load predefined beautiful combinations
   - Save JSON: Export current parameters
 
+## Presets
+
+The application includes 6 carefully crafted presets:
+
+1. **Dreamy Flow**: Soft FBM noise blended with flowing Voronoi cells
+2. **Kaleidoscope Dreams**: Hypnotic kaleidoscopic patterns with subtle noise
+3. **Fractal Reaction**: Julia set fractals mixed with reaction-diffusion patterns
+4. **Flowing Metaballs**: Curl-noise flow fields with organic metaball shapes
+5. **Geometric Patterns**: Superformula shapes combined with Truchet tiles and Moiré patterns
+6. **Cosmic Fractals**: Plasma effects, phyllotactic spirals, and Mandelbrot zoom
 
 ## Architecture
 
@@ -129,20 +140,17 @@ This project is configured for easy deployment on Railway.app:
   - `common.glsl`: Shared utility functions
   - Individual `.frag` files for each algorithm
 
-
 ## Performance
 
 - Optimized for 60 FPS on mid-range GPUs
 - Single-pass rendering with weighted blending
 - Shared noise functions to reduce computation
 
-
 ## Browser Compatibility
 
 - Chrome (recommended)
 - Firefox
 - Safari (desktop)
-
 
 ## Algorithm Credits
 
@@ -151,7 +159,6 @@ This project is configured for easy deployment on Railway.app:
 - Reaction-Diffusion: Alan Turing, Gray-Scott model
 - Cellular Automata: John Conway
 - Fractal algorithms: Benoit Mandelbrot, Gaston Julia
-
 
 ## License
 
