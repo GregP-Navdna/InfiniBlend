@@ -102,6 +102,24 @@ export class ShaderComposer {
             uniform float u_mandelbrotWeight;
             uniform float u_hexRelaxWeight;
             
+            // Blend mode uniforms for each algorithm
+            uniform int u_fbmBlendMode;
+            uniform int u_voronoiBlendMode;
+            uniform int u_reactionBlendMode;
+            uniform int u_cellularBlendMode;
+            uniform int u_kaleidoBlendMode;
+            uniform int u_fractalBlendMode;
+            uniform int u_curlFlowBlendMode;
+            uniform int u_metaballsBlendMode;
+            uniform int u_superformulaBlendMode;
+            uniform int u_truchetBlendMode;
+            uniform int u_plasmaBlendMode;
+            uniform int u_moireBlendMode;
+            uniform int u_phyllotaxisBlendMode;
+            uniform int u_dlaBlendMode;
+            uniform int u_mandelbrotBlendMode;
+            uniform int u_hexRelaxBlendMode;
+            
             // Algorithm-specific uniforms
             uniform float u_fbmScale;
             uniform float u_fbmSpeed;
@@ -218,6 +236,99 @@ export class ShaderComposer {
             ${this.shaders.mandelbrot || ''}
             ${this.shaders.hexRelax || ''}
             
+            // Blend mode functions
+            vec3 blendNormal(vec3 base, vec3 blend, float weight) {
+                return mix(base, blend, weight);
+            }
+            
+            vec3 blendMultiply(vec3 base, vec3 blend, float weight) {
+                return mix(base, base * blend, weight);
+            }
+            
+            vec3 blendScreen(vec3 base, vec3 blend, float weight) {
+                return mix(base, 1.0 - (1.0 - base) * (1.0 - blend), weight);
+            }
+            
+            vec3 blendOverlay(vec3 base, vec3 blend, float weight) {
+                vec3 result = vec3(
+                    base.r < 0.5 ? 2.0 * base.r * blend.r : 1.0 - 2.0 * (1.0 - base.r) * (1.0 - blend.r),
+                    base.g < 0.5 ? 2.0 * base.g * blend.g : 1.0 - 2.0 * (1.0 - base.g) * (1.0 - blend.g),
+                    base.b < 0.5 ? 2.0 * base.b * blend.b : 1.0 - 2.0 * (1.0 - base.b) * (1.0 - blend.b)
+                );
+                return mix(base, result, weight);
+            }
+            
+            vec3 blendSoftLight(vec3 base, vec3 blend, float weight) {
+                vec3 result = vec3(
+                    blend.r < 0.5 ? base.r * (2.0 * blend.r + base.r * (1.0 - 2.0 * blend.r)) : sqrt(base.r) * (2.0 * blend.r - 1.0) + base.r * (1.0 - blend.r),
+                    blend.g < 0.5 ? base.g * (2.0 * blend.g + base.g * (1.0 - 2.0 * blend.g)) : sqrt(base.g) * (2.0 * blend.g - 1.0) + base.g * (1.0 - blend.g),
+                    blend.b < 0.5 ? base.b * (2.0 * blend.b + base.b * (1.0 - 2.0 * blend.b)) : sqrt(base.b) * (2.0 * blend.b - 1.0) + base.b * (1.0 - blend.b)
+                );
+                return mix(base, result, weight);
+            }
+            
+            vec3 blendHardLight(vec3 base, vec3 blend, float weight) {
+                return blendOverlay(blend, base, weight);
+            }
+            
+            vec3 blendColorDodge(vec3 base, vec3 blend, float weight) {
+                vec3 result = base / (1.0 - blend);
+                return mix(base, result, weight);
+            }
+            
+            vec3 blendColorBurn(vec3 base, vec3 blend, float weight) {
+                vec3 result = 1.0 - (1.0 - base) / blend;
+                return mix(base, result, weight);
+            }
+            
+            vec3 blendDifference(vec3 base, vec3 blend, float weight) {
+                return mix(base, abs(base - blend), weight);
+            }
+            
+            vec3 blendExclusion(vec3 base, vec3 blend, float weight) {
+                return mix(base, base + blend - 2.0 * base * blend, weight);
+            }
+            
+            vec3 blendLighten(vec3 base, vec3 blend, float weight) {
+                return mix(base, max(base, blend), weight);
+            }
+            
+            vec3 blendDarken(vec3 base, vec3 blend, float weight) {
+                return mix(base, min(base, blend), weight);
+            }
+            
+            vec3 blendLinearLight(vec3 base, vec3 blend, float weight) {
+                vec3 result = 2.0 * blend + base - 1.0;
+                return mix(base, result, weight);
+            }
+            
+            vec3 blendVividLight(vec3 base, vec3 blend, float weight) {
+                vec3 result = vec3(
+                    blend.r < 0.5 ? 1.0 - (1.0 - base.r) / (2.0 * blend.r) : base.r / (2.0 * (1.0 - blend.r)),
+                    blend.g < 0.5 ? 1.0 - (1.0 - base.g) / (2.0 * blend.g) : base.g / (2.0 * (1.0 - blend.g)),
+                    blend.b < 0.5 ? 1.0 - (1.0 - base.b) / (2.0 * blend.b) : base.b / (2.0 * (1.0 - blend.b))
+                );
+                return mix(base, result, weight);
+            }
+            
+            vec3 applyBlendMode(vec3 base, vec3 blend, float weight, int mode) {
+                if (mode == 0) return blendNormal(base, blend, weight);
+                else if (mode == 1) return blendMultiply(base, blend, weight);
+                else if (mode == 2) return blendScreen(base, blend, weight);
+                else if (mode == 3) return blendOverlay(base, blend, weight);
+                else if (mode == 4) return blendSoftLight(base, blend, weight);
+                else if (mode == 5) return blendHardLight(base, blend, weight);
+                else if (mode == 6) return blendColorDodge(base, blend, weight);
+                else if (mode == 7) return blendColorBurn(base, blend, weight);
+                else if (mode == 8) return blendDifference(base, blend, weight);
+                else if (mode == 9) return blendExclusion(base, blend, weight);
+                else if (mode == 10) return blendLighten(base, blend, weight);
+                else if (mode == 11) return blendDarken(base, blend, weight);
+                else if (mode == 12) return blendLinearLight(base, blend, weight);
+                else if (mode == 13) return blendVividLight(base, blend, weight);
+                else return blendNormal(base, blend, weight);
+            }
+            
             // Color adjustment functions
             vec3 adjustBrightness(vec3 color, float brightness) {
                 return color * brightness;
@@ -284,24 +395,58 @@ export class ShaderComposer {
                                   phyllotaxisEffectiveWeight + dlaEffectiveWeight + mandelbrotEffectiveWeight +
                                   hexRelaxEffectiveWeight + 0.001;
                 
-                vec3 color = (
-                    fbmEffectiveWeight * fbmColor +
-                    voronoiEffectiveWeight * voronoiColor +
-                    reactionEffectiveWeight * reactionColor +
-                    cellularEffectiveWeight * cellularColor +
-                    kaleidoEffectiveWeight * kaleidoColor +
-                    fractalEffectiveWeight * fractalColor +
-                    curlFlowEffectiveWeight * curlFlowColor +
-                    metaballsEffectiveWeight * metaballsColor +
-                    superformulaEffectiveWeight * superformulaColor +
-                    truchetEffectiveWeight * truchetColor +
-                    plasmaEffectiveWeight * plasmaColor +
-                    moireEffectiveWeight * moireColor +
-                    phyllotaxisEffectiveWeight * phyllotaxisColor +
-                    dlaEffectiveWeight * dlaColor +
-                    mandelbrotEffectiveWeight * mandelbrotColor +
-                    hexRelaxEffectiveWeight * hexRelaxColor
-                ) / totalWeight;
+                // Start with black color and accumulate blended results
+                vec3 color = vec3(0.0);
+                
+                // Apply each shader with its blend mode
+                if (fbmEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, fbmColor, fbmEffectiveWeight / totalWeight, u_fbmBlendMode);
+                }
+                if (voronoiEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, voronoiColor, voronoiEffectiveWeight / totalWeight, u_voronoiBlendMode);
+                }
+                if (reactionEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, reactionColor, reactionEffectiveWeight / totalWeight, u_reactionBlendMode);
+                }
+                if (cellularEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, cellularColor, cellularEffectiveWeight / totalWeight, u_cellularBlendMode);
+                }
+                if (kaleidoEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, kaleidoColor, kaleidoEffectiveWeight / totalWeight, u_kaleidoBlendMode);
+                }
+                if (fractalEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, fractalColor, fractalEffectiveWeight / totalWeight, u_fractalBlendMode);
+                }
+                if (curlFlowEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, curlFlowColor, curlFlowEffectiveWeight / totalWeight, u_curlFlowBlendMode);
+                }
+                if (metaballsEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, metaballsColor, metaballsEffectiveWeight / totalWeight, u_metaballsBlendMode);
+                }
+                if (superformulaEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, superformulaColor, superformulaEffectiveWeight / totalWeight, u_superformulaBlendMode);
+                }
+                if (truchetEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, truchetColor, truchetEffectiveWeight / totalWeight, u_truchetBlendMode);
+                }
+                if (plasmaEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, plasmaColor, plasmaEffectiveWeight / totalWeight, u_plasmaBlendMode);
+                }
+                if (moireEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, moireColor, moireEffectiveWeight / totalWeight, u_moireBlendMode);
+                }
+                if (phyllotaxisEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, phyllotaxisColor, phyllotaxisEffectiveWeight / totalWeight, u_phyllotaxisBlendMode);
+                }
+                if (dlaEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, dlaColor, dlaEffectiveWeight / totalWeight, u_dlaBlendMode);
+                }
+                if (mandelbrotEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, mandelbrotColor, mandelbrotEffectiveWeight / totalWeight, u_mandelbrotBlendMode);
+                }
+                if (hexRelaxEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, hexRelaxColor, hexRelaxEffectiveWeight / totalWeight, u_hexRelaxBlendMode);
+                }
                 
                 // DEBUG: If no shaders are active, show debug pattern
                 if (totalWeight < 0.01) {

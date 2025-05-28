@@ -64,20 +64,178 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
         }
         
         .lil-gui .github-button:hover {
-            opacity: 1;
+            opacity: 0.8;
         }
         
-        .lil-gui .github-button svg {
-            width: 18px;
-            height: 18px;
-            fill: #c3c3c3;
+        /* Modern GUI styling */
+        .lil-gui {
+            --background-color: rgba(17, 24, 39, 0.95) !important; /* gray-900 with opacity */
+            --title-background-color: rgba(31, 41, 55, 0.95) !important; /* gray-800 */
+            --title-text-color: rgb(209, 213, 219) !important; /* gray-300 */
+            --widget-color: rgb(55, 65, 81) !important; /* gray-700 */
+            --hover-color: rgb(75, 85, 99) !important; /* gray-600 */
+            --focus-color: rgb(99, 102, 241) !important; /* indigo-500 */
+            --number-color: rgb(165, 180, 252) !important; /* indigo-300 */
+            --string-color: rgb(134, 239, 172) !important; /* green-300 */
+            
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-size: 10px !important;
+            line-height: 1.5 !important;
+            backdrop-filter: blur(10px);
+            border: 0px solid rgba(75, 85, 99, 0.3);
+            border-radius: 4px !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+        
+        /* Smooth transitions */
+        .lil-gui * {
+            transition: all 0.2s ease !important;
+        }
+        
+        /* Controllers styling */
+        .lil-gui .controller {
+            border-radius: 4px !important;
+            margin: 2px 0 !important;
+        }
+        
+        .lil-gui .controller:hover {
+            background-color: rgba(75, 85, 99, 0.2) !important;
+        }
+        
+        /* Title styling */
+        .lil-gui .title {
+            font-weight: 600 !important;
+            letter-spacing: 0.025em !important;
+            text-transform: uppercase !important;
+            font-size: 12px !important;
+            padding: 8px 10px !important;
+            border-radius: 2px 2px 0 0 !important;
+        }
+        
+        /* Folder styling */
+        .lil-gui .children {
+            background-color: rgba(17, 24, 39, 0.5) !important;
+            border-left: 0px solid rgba(99, 102, 241, 0.2) !important;
+            margin-left: 4px !important;
+            padding-left: 4px !important;
+        }
+        
+        /* Input fields */
+        .lil-gui input[type="text"],
+        .lil-gui input[type="number"] {
+            background-color: rgba(31, 41, 55, 0.8) !important;
+            border: 1px solid rgba(75, 85, 99, 0.3) !important;
+            border-radius: 4px !important;
+            padding: 2px 2px !important;
+            color: rgb(209, 213, 219) !important;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+        }
+        
+        .lil-gui input[type="text"]:focus,
+        .lil-gui input[type="number"]:focus {
+            border-color: rgb(99, 102, 241) !important;
+            outline: none !important;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+        }
+        
+        /* Slider styling */
+        .lil-gui .slider {
+            background-color: rgba(31, 41, 55, 0.8) !important;
+            border-radius: 4px !important;
+            height: 18px !important;
+            cursor: pointer !important;
+        }
+        
+        .lil-gui .slider:hover {
+            background-color: rgba(55, 65, 81, 0.8) !important;
+        }
+        
+        /* Checkboxes */
+        .lil-gui input[type="checkbox"] {
+            cursor: pointer !important;
+            width: 16px !important;
+            height: 16px !important;
+            border-radius: 2px !important;
+            background-color: rgba(31, 41, 55, 0.8) !important;
+            border: 0px solid rgba(75, 85, 99, 0.5) !important;
+        }
+        
+        .lil-gui input[type="checkbox"]:checked {
+            background-color: rgb(99, 102, 241) !important;
+            border-color: rgb(99, 102, 241) !important;
+        }
+        
+        /* Buttons */
+        .lil-gui button {
+            background-color: rgba(31, 41, 55, 0.8) !important;
+            border: 0px solid rgba(75, 85, 99, 0.3) !important;
+            border-radius: 2px !important;
+            color: rgb(209, 213, 219) !important;
+            font-weight: 500 !important;
+            padding: 8px 4px !important;
+            cursor: pointer !important;
+            text-transform: none !important;
+            letter-spacing: 0.025em !important;
+            line-height: 1 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .lil-gui button:hover {
+            background-color: rgba(55, 65, 81, 0.8) !important;
+            border-color: rgba(99, 102, 241, 0.5) !important;
+            transform: translateY(0px);
+            box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0.1), 0 2px 6px -3px rgba(0, 0, 0, 0.06);
+        }
+        
+        .lil-gui button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        
+        /* Color picker */
+        .lil-gui .widget input[type="color"] {
+            border-radius: 2px !important;
+            cursor: pointer !important;
+        }
+        
+        /* Scrollbar styling */
+        .lil-gui::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .lil-gui::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.5);
+        }
+        
+        .lil-gui::-webkit-scrollbar-thumb {
+            background: rgba(75, 85, 99, 0.5);
+            border-radius: 2px;
+        }
+        
+        .lil-gui::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+        
+        /* Number input arrows */
+        .lil-gui input[type="number"]::-webkit-inner-spin-button,
+        .lil-gui input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.5;
+        }
+        
+        .lil-gui input[type="number"]:hover::-webkit-inner-spin-button,
+        .lil-gui input[type="number"]:hover::-webkit-outer-spin-button {
+            opacity: 1;
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="info">InfiniBlend</div>

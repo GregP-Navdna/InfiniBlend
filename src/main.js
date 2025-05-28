@@ -50,6 +50,24 @@ class GenerativeShaderApp {
             mandelbrotWeight: 0.0,
             hexRelaxWeight: 0.0,
             
+            // Blend modes for each shader (0=Normal, 1=Multiply, 2=Screen, etc.)
+            fbmBlendMode: 0,
+            voronoiBlendMode: 0,
+            reactionBlendMode: 0,
+            cellularBlendMode: 0,
+            kaleidoBlendMode: 0,
+            fractalBlendMode: 0,
+            curlFlowBlendMode: 0,
+            metaballsBlendMode: 0,
+            superformulaBlendMode: 0,
+            truchetBlendMode: 0,
+            plasmaBlendMode: 0,
+            moireBlendMode: 0,
+            phyllotaxisBlendMode: 0,
+            dlaBlendMode: 0,
+            mandelbrotBlendMode: 0,
+            hexRelaxBlendMode: 0,
+            
             // FBM parameters
             fbmScale: 2.0,
             fbmSpeed: 0.5,
@@ -241,6 +259,24 @@ class GenerativeShaderApp {
             u_mandelbrotWeight: { value: this.params.mandelbrotWeight },
             u_hexRelaxWeight: { value: this.params.hexRelaxWeight },
             
+            // Blend modes for each shader
+            u_fbmBlendMode: { value: this.params.fbmBlendMode },
+            u_voronoiBlendMode: { value: this.params.voronoiBlendMode },
+            u_reactionBlendMode: { value: this.params.reactionBlendMode },
+            u_cellularBlendMode: { value: this.params.cellularBlendMode },
+            u_kaleidoBlendMode: { value: this.params.kaleidoBlendMode },
+            u_fractalBlendMode: { value: this.params.fractalBlendMode },
+            u_curlFlowBlendMode: { value: this.params.curlFlowBlendMode },
+            u_metaballsBlendMode: { value: this.params.metaballsBlendMode },
+            u_superformulaBlendMode: { value: this.params.superformulaBlendMode },
+            u_truchetBlendMode: { value: this.params.truchetBlendMode },
+            u_plasmaBlendMode: { value: this.params.plasmaBlendMode },
+            u_moireBlendMode: { value: this.params.moireBlendMode },
+            u_phyllotaxisBlendMode: { value: this.params.phyllotaxisBlendMode },
+            u_dlaBlendMode: { value: this.params.dlaBlendMode },
+            u_mandelbrotBlendMode: { value: this.params.mandelbrotBlendMode },
+            u_hexRelaxBlendMode: { value: this.params.hexRelaxBlendMode },
+            
             // Algorithm-specific uniforms
             u_fbmScale: { value: this.params.fbmScale },
             u_fbmSpeed: { value: this.params.fbmSpeed },
@@ -345,54 +381,88 @@ class GenerativeShaderApp {
         // Master blend weights
         const blendFolder = this.gui.addFolder('Shader Blend Weights');
         
+        // Blend mode names for display
+        const blendModes = {
+            0: 'Normal',
+            1: 'Multiply',
+            2: 'Screen',
+            3: 'Overlay',
+            4: 'Soft Light',
+            5: 'Hard Light',
+            6: 'Color Dodge',
+            7: 'Color Burn',
+            8: 'Difference',
+            9: 'Exclusion',
+            10: 'Lighten',
+            11: 'Darken',
+            12: 'Linear Light',
+            13: 'Vivid Light'
+        };
+        
         // Add toggles and weights for each shader
         blendFolder.add(this.params, 'fbmEnabled').name('FBM On/Off').onChange(v => this.material.uniforms.u_fbmEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'fbmWeight', 0, 1).name('FBM Weight').onChange(v => this.material.uniforms.u_fbmWeight.value = v);
+        blendFolder.add(this.params, 'fbmBlendMode', blendModes).name('FBM Blend').onChange(v => this.material.uniforms.u_fbmBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'voronoiEnabled').name('Voronoi On/Off').onChange(v => this.material.uniforms.u_voronoiEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'voronoiWeight', 0, 1).name('Voronoi Weight').onChange(v => this.material.uniforms.u_voronoiWeight.value = v);
+        blendFolder.add(this.params, 'voronoiBlendMode', blendModes).name('Voronoi Blend').onChange(v => this.material.uniforms.u_voronoiBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'reactionEnabled').name('Reaction On/Off').onChange(v => this.material.uniforms.u_reactionEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'reactionWeight', 0, 1).name('Reaction Weight').onChange(v => this.material.uniforms.u_reactionWeight.value = v);
+        blendFolder.add(this.params, 'reactionBlendMode', blendModes).name('Reaction Blend').onChange(v => this.material.uniforms.u_reactionBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'cellularEnabled').name('Cellular On/Off').onChange(v => this.material.uniforms.u_cellularEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'cellularWeight', 0, 1).name('Cellular Weight').onChange(v => this.material.uniforms.u_cellularWeight.value = v);
+        blendFolder.add(this.params, 'cellularBlendMode', blendModes).name('Cellular Blend').onChange(v => this.material.uniforms.u_cellularBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'kaleidoEnabled').name('Kaleido On/Off').onChange(v => this.material.uniforms.u_kaleidoEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'kaleidoWeight', 0, 1).name('Kaleido Weight').onChange(v => this.material.uniforms.u_kaleidoWeight.value = v);
+        blendFolder.add(this.params, 'kaleidoBlendMode', blendModes).name('Kaleido Blend').onChange(v => this.material.uniforms.u_kaleidoBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'fractalEnabled').name('Fractal On/Off').onChange(v => this.material.uniforms.u_fractalEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'fractalWeight', 0, 1).name('Fractal Weight').onChange(v => this.material.uniforms.u_fractalWeight.value = v);
+        blendFolder.add(this.params, 'fractalBlendMode', blendModes).name('Fractal Blend').onChange(v => this.material.uniforms.u_fractalBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'curlFlowEnabled').name('Curl Flow On/Off').onChange(v => this.material.uniforms.u_curlFlowEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'curlFlowWeight', 0, 1).name('Curl Flow Weight').onChange(v => this.material.uniforms.u_curlFlowWeight.value = v);
+        blendFolder.add(this.params, 'curlFlowBlendMode', blendModes).name('Curl Flow Blend').onChange(v => this.material.uniforms.u_curlFlowBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'metaballsEnabled').name('Metaballs On/Off').onChange(v => this.material.uniforms.u_metaballsEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'metaballsWeight', 0, 1).name('Metaballs Weight').onChange(v => this.material.uniforms.u_metaballsWeight.value = v);
+        blendFolder.add(this.params, 'metaballsBlendMode', blendModes).name('Metaballs Blend').onChange(v => this.material.uniforms.u_metaballsBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'superformulaEnabled').name('Superformula On/Off').onChange(v => this.material.uniforms.u_superformulaEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'superformulaWeight', 0, 1).name('Superformula Weight').onChange(v => this.material.uniforms.u_superformulaWeight.value = v);
+        blendFolder.add(this.params, 'superformulaBlendMode', blendModes).name('Superformula Blend').onChange(v => this.material.uniforms.u_superformulaBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'truchetEnabled').name('Truchet On/Off').onChange(v => this.material.uniforms.u_truchetEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'truchetWeight', 0, 1).name('Truchet Weight').onChange(v => this.material.uniforms.u_truchetWeight.value = v);
+        blendFolder.add(this.params, 'truchetBlendMode', blendModes).name('Truchet Blend').onChange(v => this.material.uniforms.u_truchetBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'plasmaEnabled').name('Plasma On/Off').onChange(v => this.material.uniforms.u_plasmaEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'plasmaWeight', 0, 1).name('Plasma Weight').onChange(v => this.material.uniforms.u_plasmaWeight.value = v);
+        blendFolder.add(this.params, 'plasmaBlendMode', blendModes).name('Plasma Blend').onChange(v => this.material.uniforms.u_plasmaBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'moireEnabled').name('Moire On/Off').onChange(v => this.material.uniforms.u_moireEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'moireWeight', 0, 1).name('Moire Weight').onChange(v => this.material.uniforms.u_moireWeight.value = v);
+        blendFolder.add(this.params, 'moireBlendMode', blendModes).name('Moire Blend').onChange(v => this.material.uniforms.u_moireBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'phyllotaxisEnabled').name('Phyllotaxis On/Off').onChange(v => this.material.uniforms.u_phyllotaxisEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'phyllotaxisWeight', 0, 1).name('Phyllotaxis Weight').onChange(v => this.material.uniforms.u_phyllotaxisWeight.value = v);
+        blendFolder.add(this.params, 'phyllotaxisBlendMode', blendModes).name('Phyllotaxis Blend').onChange(v => this.material.uniforms.u_phyllotaxisBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'dlaEnabled').name('DLA On/Off').onChange(v => this.material.uniforms.u_dlaEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'dlaWeight', 0, 1).name('DLA Weight').onChange(v => this.material.uniforms.u_dlaWeight.value = v);
+        blendFolder.add(this.params, 'dlaBlendMode', blendModes).name('DLA Blend').onChange(v => this.material.uniforms.u_dlaBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'mandelbrotEnabled').name('Mandelbrot On/Off').onChange(v => this.material.uniforms.u_mandelbrotEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'mandelbrotWeight', 0, 1).name('Mandelbrot Weight').onChange(v => this.material.uniforms.u_mandelbrotWeight.value = v);
+        blendFolder.add(this.params, 'mandelbrotBlendMode', blendModes).name('Mandelbrot Blend').onChange(v => this.material.uniforms.u_mandelbrotBlendMode.value = parseInt(v));
         
         blendFolder.add(this.params, 'hexRelaxEnabled').name('Hex Relax On/Off').onChange(v => this.material.uniforms.u_hexRelaxEnabled.value = v ? 1.0 : 0.0);
         blendFolder.add(this.params, 'hexRelaxWeight', 0, 1).name('Hex Relax Weight').onChange(v => this.material.uniforms.u_hexRelaxWeight.value = v);
+        blendFolder.add(this.params, 'hexRelaxBlendMode', blendModes).name('Hex Relax Blend').onChange(v => this.material.uniforms.u_hexRelaxBlendMode.value = parseInt(v));
         
         blendFolder.open();
         
@@ -447,27 +517,35 @@ class GenerativeShaderApp {
             }
         }, 100);
         
-        utilsFolder.open();
+        // Keep all folders closed by default
+        // utilsFolder.open();
     }
 
     initializeAutoAnimateIncrements() {
         // Generate random increments for all parameters
         const paramKeys = Object.keys(this.params);
-        const excludedParams = ['autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation'];
+        const excludedParams = [
+            'autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation',
+            // Exclude all blend mode parameters
+            'fbmBlendMode', 'voronoiBlendMode', 'reactionBlendMode', 'cellularBlendMode',
+            'kaleidoBlendMode', 'fractalBlendMode', 'curlFlowBlendMode', 'metaballsBlendMode',
+            'superformulaBlendMode', 'truchetBlendMode', 'plasmaBlendMode', 'moireBlendMode',
+            'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode', 'hexRelaxBlendMode'
+        ];
         
         paramKeys.forEach(key => {
             if (!excludedParams.includes(key)) {
                 // Random increment between -0.01 and 0.01, scaled by parameter range
-                const baseIncrement = (Math.random() - 0.5) * 0.02;
+                const baseIncrement = (Math.random() - 0.5) * 0.002;
                 
                 // Scale increment based on typical parameter range
                 let scale = 1.0;
                 if (key.includes('Weight')) scale = 0.5; // Slower for weights
-                if (key.includes('Scale') || key.includes('Zoom')) scale = 0.1; // Much slower for scale params
-                if (key.includes('Speed')) scale = 0.5;
-                if (key.includes('Freq')) scale = 0.2;
+                if (key.includes('Scale') || key.includes('Zoom')) scale = 0.01; // Much slower for scale params
+                if (key.includes('Speed')) scale = 0.15;
+                if (key.includes('Freq')) scale = 0.02;
                 if (key.includes('Center')) scale = 0.05; // Very slow for position params
-                if (key.includes('Offset')) scale = 0.1;
+                if (key.includes('Offset')) scale = 0.2;
                 
                 this.autoAnimateIncrements[key] = baseIncrement * scale;
             }
@@ -499,10 +577,30 @@ class GenerativeShaderApp {
             }
         });
         
+        // Randomize blend modes
+        const blendModeParams = [
+            'fbmBlendMode', 'voronoiBlendMode', 'reactionBlendMode', 
+            'cellularBlendMode', 'kaleidoBlendMode', 'fractalBlendMode',
+            'curlFlowBlendMode', 'metaballsBlendMode', 'superformulaBlendMode',
+            'truchetBlendMode', 'plasmaBlendMode', 'moireBlendMode',
+            'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode',
+            'hexRelaxBlendMode'
+        ];
+        
+        blendModeParams.forEach(key => {
+            // Random blend mode between 0-13 (14 blend modes total)
+            const value = Math.floor(Math.random() * 14);
+            this.params[key] = value;
+            const controller = this.gui.controllersRecursive().find(c => c.property === key);
+            if (controller) {
+                controller.setValue(value);
+            }
+        });
+        
         // Randomize numeric parameters
         Object.keys(this.params).forEach(key => {
-            // Skip boolean parameters as they're already handled
-            if (booleanParams.includes(key)) return;
+            // Skip boolean parameters and blend modes as they're already handled
+            if (booleanParams.includes(key) || blendModeParams.includes(key)) return;
             
             const controller = this.gui.controllersRecursive().find(c => c.property === key);
             if (controller && controller._min !== undefined && controller._max !== undefined) {
@@ -529,6 +627,10 @@ class GenerativeShaderApp {
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
+                kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
+                superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
+                phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
                 fbmScale: 1.5, fbmSpeed: 0.3, fbmOctaves: 5, fbmHueShift: 0.2,
                 voronoiScale: 3, voronoiSpeed: 0.1,
                 timeScale: 0.8, brightness: 1.1, contrast: 1.2, saturation: 0.9
@@ -545,6 +647,10 @@ class GenerativeShaderApp {
                 kaleidoWeight: 0.8, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
+                kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
+                superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
+                phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
                 kaleidoSegments: 8, kaleidoRotation: 0.2, kaleidoZoom: 1.5,
                 fbmScale: 0.5, timeScale: 1.2, brightness: 1.2,
                 contrast: 1.3, saturation: 1.1
@@ -561,6 +667,10 @@ class GenerativeShaderApp {
                 kaleidoWeight: 0, fractalWeight: 0.4, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
+                kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
+                superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
+                phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
                 reactionFeed: 0.055, reactionKill: 0.062,
                 fractalIterations: 80, fractalZoom: 0.8, timeScale: 0.5, brightness: 1.0,
                 contrast: 1.5, saturation: 0.8
@@ -577,6 +687,10 @@ class GenerativeShaderApp {
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0.6, metaballsWeight: 0.4,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
+                kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
+                superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
+                phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
                 flowScale: 3.0, advectSpeed: 0.8, turbulence: 1.5,
                 ballCount: 5, metaRadius: 0.8, metaThreshold: 1.0, metaSpeed: 0.5,
                 timeScale: 1.0, brightness: 1.2, contrast: 1.1, saturation: 1.3
@@ -593,6 +707,10 @@ class GenerativeShaderApp {
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0.3, truchetWeight: 0.4, plasmaWeight: 0, moireWeight: 0.3,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
+                kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
+                superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
+                phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
                 superM: 6, superN1: 1.0, superN2: 1.0, superN3: 1.0, shapeMix: 0.5,
                 tileScale: 10, rotationSeed: 2.5, lineWidth: 0.05,
                 lineDensity: 20, angleOffset: 0.785, waveSpeed: 0.3,
@@ -610,6 +728,10 @@ class GenerativeShaderApp {
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0.3, moireWeight: 0,
                 phyllotaxisWeight: 0.3, dlaWeight: 0, mandelbrotWeight: 0.4, hexRelaxWeight: 0,
+                fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
+                kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
+                superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
+                phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
                 plasmaFreq: 3.0, plasmaSpeed: 0.5, colorShift: 0.6,
                 pointCount: 200, spiralScale: 0.8, rotateSpeed: 0.1,
                 mandelbrotZoom: 1.5, mandelbrotCenterX: -0.5, mandelbrotCenterY: 0,
@@ -669,7 +791,14 @@ class GenerativeShaderApp {
         
         // Auto-animate parameters
         if (this.params.autoAnimate) {
-            const excludedParams = ['autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation'];
+            const excludedParams = [
+                'autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation',
+                // Exclude all blend mode parameters
+                'fbmBlendMode', 'voronoiBlendMode', 'reactionBlendMode', 'cellularBlendMode',
+                'kaleidoBlendMode', 'fractalBlendMode', 'curlFlowBlendMode', 'metaballsBlendMode',
+                'superformulaBlendMode', 'truchetBlendMode', 'plasmaBlendMode', 'moireBlendMode',
+                'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode', 'hexRelaxBlendMode'
+            ];
             
             Object.keys(this.params).forEach(key => {
                 if (!excludedParams.includes(key) && this.autoAnimateIncrements[key] !== undefined) {
