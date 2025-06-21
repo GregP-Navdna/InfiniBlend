@@ -10,6 +10,7 @@ A real-time generative art application that blends multiple shader algorithms th
 
 [View InfiniBlend Live App](https://infiniblend-production.up.railway.app/)
 
+![image](https://github.com/user-attachments/assets/ae3398a0-2af3-47ea-a82a-59558f898a81)
 
 ## Features
 
