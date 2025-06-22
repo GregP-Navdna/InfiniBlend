@@ -383,20 +383,20 @@ class GenerativeShaderApp {
         
         // Blend mode names for display
         const blendModes = {
-            0: 'Normal',
-            1: 'Multiply',
-            2: 'Screen',
-            3: 'Overlay',
-            4: 'Soft Light',
-            5: 'Hard Light',
-            6: 'Color Dodge',
-            7: 'Color Burn',
-            8: 'Difference',
-            9: 'Exclusion',
-            10: 'Lighten',
-            11: 'Darken',
-            12: 'Linear Light',
-            13: 'Vivid Light'
+            'Normal': 0,
+            'Multiply': 1,
+            'Screen': 2,
+            'Overlay': 3,
+            'Soft Light': 4,
+            'Hard Light': 5,
+            'Color Dodge': 6,
+            'Color Burn': 7,
+            'Difference': 8,
+            'Exclusion': 9,
+            'Lighten': 10,
+            'Darken': 11,
+            'Linear Light': 12,
+            'Vivid Light': 13
         };
         
         // Add toggles and weights for each shader
