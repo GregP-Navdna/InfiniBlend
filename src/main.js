@@ -31,6 +31,16 @@ class GenerativeShaderApp {
             dlaEnabled: false,
             mandelbrotEnabled: false,
             hexRelaxEnabled: false,
+            auroraEnabled: false,
+            spirographEnabled: false,
+            nebulaEnabled: false,
+            lissajousEnabled: false,
+            warpEnabled: false,
+            causticsEnabled: false,
+            galaxyEnabled: false,
+            electricFieldEnabled: false,
+            stainedGlassEnabled: false,
+            topographicEnabled: false,
             
             // Master blend weights
             fbmWeight: 0.5,
@@ -49,6 +59,16 @@ class GenerativeShaderApp {
             dlaWeight: 0.0,
             mandelbrotWeight: 0.0,
             hexRelaxWeight: 0.0,
+            auroraWeight: 0.0,
+            spirographWeight: 0.0,
+            nebulaWeight: 0.0,
+            lissajousWeight: 0.0,
+            warpWeight: 0.0,
+            causticsWeight: 0.0,
+            galaxyWeight: 0.0,
+            electricFieldWeight: 0.0,
+            stainedGlassWeight: 0.0,
+            topographicWeight: 0.0,
             
             // Blend modes for each shader (0=Normal, 1=Multiply, 2=Screen, etc.)
             fbmBlendMode: 0,
@@ -67,6 +87,16 @@ class GenerativeShaderApp {
             dlaBlendMode: 0,
             mandelbrotBlendMode: 0,
             hexRelaxBlendMode: 0,
+            auroraBlendMode: 0,
+            spirographBlendMode: 0,
+            nebulaBlendMode: 0,
+            lissajousBlendMode: 0,
+            warpBlendMode: 0,
+            causticsBlendMode: 0,
+            galaxyBlendMode: 0,
+            electricFieldBlendMode: 0,
+            stainedGlassBlendMode: 0,
+            topographicBlendMode: 0,
             
             // FBM parameters
             fbmScale: 2.0,
@@ -161,6 +191,64 @@ class GenerativeShaderApp {
             jitter: 0.1,
             blendSharpness: 1.0,
             
+            // Aurora parameters
+            auroraScale: 2.0,
+            auroraSpeed: 0.5,
+            auroraCurtain: 2.0,
+            auroraHue: 0.35,
+            
+            // Spirograph parameters
+            spiroR1: 3.0,
+            spiroR2: 1.0,
+            spiroD: 1.5,
+            spiroSpeed: 0.5,
+            
+            // Nebula parameters
+            nebulaScale: 1.5,
+            nebulaDensity: 1.5,
+            nebulaSpeed: 0.3,
+            nebulaColor: 0.7,
+            
+            // Lissajous parameters
+            lissajousA: 3.0,
+            lissajousB: 2.0,
+            lissajousDelta: 1.57,
+            lissajousSpeed: 0.5,
+            
+            // Warp parameters
+            warpSpeed: 0.5,
+            warpTwist: 2.0,
+            warpZoom: 1.0,
+            warpRings: 6.0,
+            
+            // Caustics parameters
+            causticScale: 3.0,
+            causticSpeed: 0.5,
+            causticIntensity: 1.5,
+            
+            // Galaxy parameters
+            galaxyArms: 3.0,
+            galaxyTwist: 3.0,
+            galaxySpin: 0.2,
+            galaxyStars: 2.0,
+            
+            // Electric Field parameters
+            fieldCharges: 4.0,
+            fieldStrength: 0.3,
+            fieldSpeed: 0.5,
+            
+            // Stained Glass parameters
+            glassScale: 4.0,
+            glassBevel: 0.08,
+            glassHue: 0.0,
+            glassWarp: 0.3,
+            
+            // Topographic parameters
+            topoScale: 2.0,
+            topoLevels: 15.0,
+            topoSpeed: 0.2,
+            topoThickness: 0.05,
+            
             // Global parameters
             timeScale: 1.0,
             brightness: 1.0,
@@ -240,6 +328,16 @@ class GenerativeShaderApp {
             u_dlaEnabled: { value: this.params.dlaEnabled ? 1.0 : 0.0 },
             u_mandelbrotEnabled: { value: this.params.mandelbrotEnabled ? 1.0 : 0.0 },
             u_hexRelaxEnabled: { value: this.params.hexRelaxEnabled ? 1.0 : 0.0 },
+            u_auroraEnabled: { value: this.params.auroraEnabled ? 1.0 : 0.0 },
+            u_spirographEnabled: { value: this.params.spirographEnabled ? 1.0 : 0.0 },
+            u_nebulaEnabled: { value: this.params.nebulaEnabled ? 1.0 : 0.0 },
+            u_lissajousEnabled: { value: this.params.lissajousEnabled ? 1.0 : 0.0 },
+            u_warpEnabled: { value: this.params.warpEnabled ? 1.0 : 0.0 },
+            u_causticsEnabled: { value: this.params.causticsEnabled ? 1.0 : 0.0 },
+            u_galaxyEnabled: { value: this.params.galaxyEnabled ? 1.0 : 0.0 },
+            u_electricFieldEnabled: { value: this.params.electricFieldEnabled ? 1.0 : 0.0 },
+            u_stainedGlassEnabled: { value: this.params.stainedGlassEnabled ? 1.0 : 0.0 },
+            u_topographicEnabled: { value: this.params.topographicEnabled ? 1.0 : 0.0 },
             
             // Master blend weights
             u_fbmWeight: { value: this.params.fbmWeight },
@@ -258,6 +356,16 @@ class GenerativeShaderApp {
             u_dlaWeight: { value: this.params.dlaWeight },
             u_mandelbrotWeight: { value: this.params.mandelbrotWeight },
             u_hexRelaxWeight: { value: this.params.hexRelaxWeight },
+            u_auroraWeight: { value: this.params.auroraWeight },
+            u_spirographWeight: { value: this.params.spirographWeight },
+            u_nebulaWeight: { value: this.params.nebulaWeight },
+            u_lissajousWeight: { value: this.params.lissajousWeight },
+            u_warpWeight: { value: this.params.warpWeight },
+            u_causticsWeight: { value: this.params.causticsWeight },
+            u_galaxyWeight: { value: this.params.galaxyWeight },
+            u_electricFieldWeight: { value: this.params.electricFieldWeight },
+            u_stainedGlassWeight: { value: this.params.stainedGlassWeight },
+            u_topographicWeight: { value: this.params.topographicWeight },
             
             // Blend modes for each shader
             u_fbmBlendMode: { value: this.params.fbmBlendMode },
@@ -276,6 +384,16 @@ class GenerativeShaderApp {
             u_dlaBlendMode: { value: this.params.dlaBlendMode },
             u_mandelbrotBlendMode: { value: this.params.mandelbrotBlendMode },
             u_hexRelaxBlendMode: { value: this.params.hexRelaxBlendMode },
+            u_auroraBlendMode: { value: this.params.auroraBlendMode },
+            u_spirographBlendMode: { value: this.params.spirographBlendMode },
+            u_nebulaBlendMode: { value: this.params.nebulaBlendMode },
+            u_lissajousBlendMode: { value: this.params.lissajousBlendMode },
+            u_warpBlendMode: { value: this.params.warpBlendMode },
+            u_causticsBlendMode: { value: this.params.causticsBlendMode },
+            u_galaxyBlendMode: { value: this.params.galaxyBlendMode },
+            u_electricFieldBlendMode: { value: this.params.electricFieldBlendMode },
+            u_stainedGlassBlendMode: { value: this.params.stainedGlassBlendMode },
+            u_topographicBlendMode: { value: this.params.topographicBlendMode },
             
             // Algorithm-specific uniforms
             u_fbmScale: { value: this.params.fbmScale },
@@ -352,6 +470,54 @@ class GenerativeShaderApp {
             u_relaxSteps: { value: this.params.relaxSteps },
             u_jitter: { value: this.params.jitter },
             u_blendSharpness: { value: this.params.blendSharpness },
+            
+            u_auroraScale: { value: this.params.auroraScale },
+            u_auroraSpeed: { value: this.params.auroraSpeed },
+            u_auroraCurtain: { value: this.params.auroraCurtain },
+            u_auroraHue: { value: this.params.auroraHue },
+            
+            u_spiroR1: { value: this.params.spiroR1 },
+            u_spiroR2: { value: this.params.spiroR2 },
+            u_spiroD: { value: this.params.spiroD },
+            u_spiroSpeed: { value: this.params.spiroSpeed },
+            
+            u_nebulaScale: { value: this.params.nebulaScale },
+            u_nebulaDensity: { value: this.params.nebulaDensity },
+            u_nebulaSpeed: { value: this.params.nebulaSpeed },
+            u_nebulaColor: { value: this.params.nebulaColor },
+            
+            u_lissajousA: { value: this.params.lissajousA },
+            u_lissajousB: { value: this.params.lissajousB },
+            u_lissajousDelta: { value: this.params.lissajousDelta },
+            u_lissajousSpeed: { value: this.params.lissajousSpeed },
+            
+            u_warpSpeed: { value: this.params.warpSpeed },
+            u_warpTwist: { value: this.params.warpTwist },
+            u_warpZoom: { value: this.params.warpZoom },
+            u_warpRings: { value: this.params.warpRings },
+            
+            u_causticScale: { value: this.params.causticScale },
+            u_causticSpeed: { value: this.params.causticSpeed },
+            u_causticIntensity: { value: this.params.causticIntensity },
+            
+            u_galaxyArms: { value: this.params.galaxyArms },
+            u_galaxyTwist: { value: this.params.galaxyTwist },
+            u_galaxySpin: { value: this.params.galaxySpin },
+            u_galaxyStars: { value: this.params.galaxyStars },
+            
+            u_fieldCharges: { value: this.params.fieldCharges },
+            u_fieldStrength: { value: this.params.fieldStrength },
+            u_fieldSpeed: { value: this.params.fieldSpeed },
+            
+            u_glassScale: { value: this.params.glassScale },
+            u_glassBevel: { value: this.params.glassBevel },
+            u_glassHue: { value: this.params.glassHue },
+            u_glassWarp: { value: this.params.glassWarp },
+            
+            u_topoScale: { value: this.params.topoScale },
+            u_topoLevels: { value: this.params.topoLevels },
+            u_topoSpeed: { value: this.params.topoSpeed },
+            u_topoThickness: { value: this.params.topoThickness },
             
             u_timeScale: { value: this.params.timeScale },
             u_brightness: { value: this.params.brightness },
@@ -464,6 +630,46 @@ class GenerativeShaderApp {
         blendFolder.add(this.params, 'hexRelaxWeight', 0, 1).name('Hex Relax Weight').onChange(v => this.material.uniforms.u_hexRelaxWeight.value = v);
         blendFolder.add(this.params, 'hexRelaxBlendMode', blendModes).name('Hex Relax Blend').onChange(v => this.material.uniforms.u_hexRelaxBlendMode.value = parseInt(v));
         
+        blendFolder.add(this.params, 'auroraEnabled').name('Aurora On/Off').onChange(v => this.material.uniforms.u_auroraEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'auroraWeight', 0, 1).name('Aurora Weight').onChange(v => this.material.uniforms.u_auroraWeight.value = v);
+        blendFolder.add(this.params, 'auroraBlendMode', blendModes).name('Aurora Blend').onChange(v => this.material.uniforms.u_auroraBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'spirographEnabled').name('Spirograph On/Off').onChange(v => this.material.uniforms.u_spirographEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'spirographWeight', 0, 1).name('Spirograph Weight').onChange(v => this.material.uniforms.u_spirographWeight.value = v);
+        blendFolder.add(this.params, 'spirographBlendMode', blendModes).name('Spirograph Blend').onChange(v => this.material.uniforms.u_spirographBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'nebulaEnabled').name('Nebula On/Off').onChange(v => this.material.uniforms.u_nebulaEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'nebulaWeight', 0, 1).name('Nebula Weight').onChange(v => this.material.uniforms.u_nebulaWeight.value = v);
+        blendFolder.add(this.params, 'nebulaBlendMode', blendModes).name('Nebula Blend').onChange(v => this.material.uniforms.u_nebulaBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'lissajousEnabled').name('Lissajous On/Off').onChange(v => this.material.uniforms.u_lissajousEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'lissajousWeight', 0, 1).name('Lissajous Weight').onChange(v => this.material.uniforms.u_lissajousWeight.value = v);
+        blendFolder.add(this.params, 'lissajousBlendMode', blendModes).name('Lissajous Blend').onChange(v => this.material.uniforms.u_lissajousBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'warpEnabled').name('Warp On/Off').onChange(v => this.material.uniforms.u_warpEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'warpWeight', 0, 1).name('Warp Weight').onChange(v => this.material.uniforms.u_warpWeight.value = v);
+        blendFolder.add(this.params, 'warpBlendMode', blendModes).name('Warp Blend').onChange(v => this.material.uniforms.u_warpBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'causticsEnabled').name('Caustics On/Off').onChange(v => this.material.uniforms.u_causticsEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'causticsWeight', 0, 1).name('Caustics Weight').onChange(v => this.material.uniforms.u_causticsWeight.value = v);
+        blendFolder.add(this.params, 'causticsBlendMode', blendModes).name('Caustics Blend').onChange(v => this.material.uniforms.u_causticsBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'galaxyEnabled').name('Galaxy On/Off').onChange(v => this.material.uniforms.u_galaxyEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'galaxyWeight', 0, 1).name('Galaxy Weight').onChange(v => this.material.uniforms.u_galaxyWeight.value = v);
+        blendFolder.add(this.params, 'galaxyBlendMode', blendModes).name('Galaxy Blend').onChange(v => this.material.uniforms.u_galaxyBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'electricFieldEnabled').name('Electric Field On/Off').onChange(v => this.material.uniforms.u_electricFieldEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'electricFieldWeight', 0, 1).name('Electric Field Weight').onChange(v => this.material.uniforms.u_electricFieldWeight.value = v);
+        blendFolder.add(this.params, 'electricFieldBlendMode', blendModes).name('Electric Field Blend').onChange(v => this.material.uniforms.u_electricFieldBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'stainedGlassEnabled').name('Stained Glass On/Off').onChange(v => this.material.uniforms.u_stainedGlassEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'stainedGlassWeight', 0, 1).name('Stained Glass Weight').onChange(v => this.material.uniforms.u_stainedGlassWeight.value = v);
+        blendFolder.add(this.params, 'stainedGlassBlendMode', blendModes).name('Stained Glass Blend').onChange(v => this.material.uniforms.u_stainedGlassBlendMode.value = parseInt(v));
+        
+        blendFolder.add(this.params, 'topographicEnabled').name('Topographic On/Off').onChange(v => this.material.uniforms.u_topographicEnabled.value = v ? 1.0 : 0.0);
+        blendFolder.add(this.params, 'topographicWeight', 0, 1).name('Topographic Weight').onChange(v => this.material.uniforms.u_topographicWeight.value = v);
+        blendFolder.add(this.params, 'topographicBlendMode', blendModes).name('Topographic Blend').onChange(v => this.material.uniforms.u_topographicBlendMode.value = parseInt(v));
+        
         blendFolder.open();
         
         // Algorithm-specific parameters
@@ -530,7 +736,10 @@ class GenerativeShaderApp {
             'fbmBlendMode', 'voronoiBlendMode', 'reactionBlendMode', 'cellularBlendMode',
             'kaleidoBlendMode', 'fractalBlendMode', 'curlFlowBlendMode', 'metaballsBlendMode',
             'superformulaBlendMode', 'truchetBlendMode', 'plasmaBlendMode', 'moireBlendMode',
-            'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode', 'hexRelaxBlendMode'
+            'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode', 'hexRelaxBlendMode',
+            'auroraBlendMode', 'spirographBlendMode', 'nebulaBlendMode', 'lissajousBlendMode',
+            'warpBlendMode', 'causticsBlendMode', 'galaxyBlendMode', 'electricFieldBlendMode',
+            'stainedGlassBlendMode', 'topographicBlendMode'
         ];
         
         paramKeys.forEach(key => {
@@ -565,7 +774,10 @@ class GenerativeShaderApp {
             'curlFlowEnabled', 'metaballsEnabled', 'superformulaEnabled',
             'truchetEnabled', 'plasmaEnabled', 'moireEnabled',
             'phyllotaxisEnabled', 'dlaEnabled', 'mandelbrotEnabled',
-            'hexRelaxEnabled'
+            'hexRelaxEnabled', 'auroraEnabled', 'spirographEnabled',
+            'nebulaEnabled', 'lissajousEnabled', 'warpEnabled',
+            'causticsEnabled', 'galaxyEnabled', 'electricFieldEnabled',
+            'stainedGlassEnabled', 'topographicEnabled'
         ];
         
         booleanParams.forEach(key => {
@@ -584,7 +796,10 @@ class GenerativeShaderApp {
             'curlFlowBlendMode', 'metaballsBlendMode', 'superformulaBlendMode',
             'truchetBlendMode', 'plasmaBlendMode', 'moireBlendMode',
             'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode',
-            'hexRelaxBlendMode'
+            'hexRelaxBlendMode', 'auroraBlendMode', 'spirographBlendMode',
+            'nebulaBlendMode', 'lissajousBlendMode', 'warpBlendMode',
+            'causticsBlendMode', 'galaxyBlendMode', 'electricFieldBlendMode',
+            'stainedGlassBlendMode', 'topographicBlendMode'
         ];
         
         blendModeParams.forEach(key => {
@@ -623,14 +838,24 @@ class GenerativeShaderApp {
                 truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
                 phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
                 hexRelaxEnabled: false,
+                auroraEnabled: false, spirographEnabled: false, nebulaEnabled: false,
+                lissajousEnabled: false, warpEnabled: false, causticsEnabled: false,
+                galaxyEnabled: false, electricFieldEnabled: false, stainedGlassEnabled: false,
+                topographicEnabled: false,
                 fbmWeight: 0.7, voronoiWeight: 0.3, reactionWeight: 0, cellularWeight: 0,
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                auroraWeight: 0, spirographWeight: 0, nebulaWeight: 0, lissajousWeight: 0,
+                warpWeight: 0, causticsWeight: 0, galaxyWeight: 0, electricFieldWeight: 0,
+                stainedGlassWeight: 0, topographicWeight: 0,
                 fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
                 kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
                 superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
                 phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
+                auroraBlendMode: 0, spirographBlendMode: 0, nebulaBlendMode: 0, lissajousBlendMode: 0,
+                warpBlendMode: 0, causticsBlendMode: 0, galaxyBlendMode: 0, electricFieldBlendMode: 0,
+                stainedGlassBlendMode: 0, topographicBlendMode: 0,
                 fbmScale: 1.5, fbmSpeed: 0.3, fbmOctaves: 5, fbmHueShift: 0.2,
                 voronoiScale: 3, voronoiSpeed: 0.1,
                 timeScale: 0.8, brightness: 1.1, contrast: 1.2, saturation: 0.9
@@ -643,14 +868,24 @@ class GenerativeShaderApp {
                 truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
                 phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
                 hexRelaxEnabled: false,
+                auroraEnabled: false, spirographEnabled: false, nebulaEnabled: false,
+                lissajousEnabled: false, warpEnabled: false, causticsEnabled: false,
+                galaxyEnabled: false, electricFieldEnabled: false, stainedGlassEnabled: false,
+                topographicEnabled: false,
                 fbmWeight: 0.2, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
                 kaleidoWeight: 0.8, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                auroraWeight: 0, spirographWeight: 0, nebulaWeight: 0, lissajousWeight: 0,
+                warpWeight: 0, causticsWeight: 0, galaxyWeight: 0, electricFieldWeight: 0,
+                stainedGlassWeight: 0, topographicWeight: 0,
                 fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
                 kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
                 superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
                 phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
+                auroraBlendMode: 0, spirographBlendMode: 0, nebulaBlendMode: 0, lissajousBlendMode: 0,
+                warpBlendMode: 0, causticsBlendMode: 0, galaxyBlendMode: 0, electricFieldBlendMode: 0,
+                stainedGlassBlendMode: 0, topographicBlendMode: 0,
                 kaleidoSegments: 8, kaleidoRotation: 0.2, kaleidoZoom: 1.5,
                 fbmScale: 0.5, timeScale: 1.2, brightness: 1.2,
                 contrast: 1.3, saturation: 1.1
@@ -663,14 +898,24 @@ class GenerativeShaderApp {
                 truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
                 phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
                 hexRelaxEnabled: false,
+                auroraEnabled: false, spirographEnabled: false, nebulaEnabled: false,
+                lissajousEnabled: false, warpEnabled: false, causticsEnabled: false,
+                galaxyEnabled: false, electricFieldEnabled: false, stainedGlassEnabled: false,
+                topographicEnabled: false,
                 fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0.6, cellularWeight: 0,
                 kaleidoWeight: 0, fractalWeight: 0.4, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                auroraWeight: 0, spirographWeight: 0, nebulaWeight: 0, lissajousWeight: 0,
+                warpWeight: 0, causticsWeight: 0, galaxyWeight: 0, electricFieldWeight: 0,
+                stainedGlassWeight: 0, topographicWeight: 0,
                 fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
                 kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
                 superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
                 phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
+                auroraBlendMode: 0, spirographBlendMode: 0, nebulaBlendMode: 0, lissajousBlendMode: 0,
+                warpBlendMode: 0, causticsBlendMode: 0, galaxyBlendMode: 0, electricFieldBlendMode: 0,
+                stainedGlassBlendMode: 0, topographicBlendMode: 0,
                 reactionFeed: 0.055, reactionKill: 0.062,
                 fractalIterations: 80, fractalZoom: 0.8, timeScale: 0.5, brightness: 1.0,
                 contrast: 1.5, saturation: 0.8
@@ -683,14 +928,24 @@ class GenerativeShaderApp {
                 truchetEnabled: false, plasmaEnabled: false, moireEnabled: false,
                 phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
                 hexRelaxEnabled: false,
+                auroraEnabled: false, spirographEnabled: false, nebulaEnabled: false,
+                lissajousEnabled: false, warpEnabled: false, causticsEnabled: false,
+                galaxyEnabled: false, electricFieldEnabled: false, stainedGlassEnabled: false,
+                topographicEnabled: false,
                 fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0.6, metaballsWeight: 0.4,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0, moireWeight: 0,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                auroraWeight: 0, spirographWeight: 0, nebulaWeight: 0, lissajousWeight: 0,
+                warpWeight: 0, causticsWeight: 0, galaxyWeight: 0, electricFieldWeight: 0,
+                stainedGlassWeight: 0, topographicWeight: 0,
                 fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
                 kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
                 superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
                 phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
+                auroraBlendMode: 0, spirographBlendMode: 0, nebulaBlendMode: 0, lissajousBlendMode: 0,
+                warpBlendMode: 0, causticsBlendMode: 0, galaxyBlendMode: 0, electricFieldBlendMode: 0,
+                stainedGlassBlendMode: 0, topographicBlendMode: 0,
                 flowScale: 3.0, advectSpeed: 0.8, turbulence: 1.5,
                 ballCount: 5, metaRadius: 0.8, metaThreshold: 1.0, metaSpeed: 0.5,
                 timeScale: 1.0, brightness: 1.2, contrast: 1.1, saturation: 1.3
@@ -703,14 +958,24 @@ class GenerativeShaderApp {
                 truchetEnabled: true, plasmaEnabled: false, moireEnabled: true,
                 phyllotaxisEnabled: false, dlaEnabled: false, mandelbrotEnabled: false,
                 hexRelaxEnabled: false,
+                auroraEnabled: false, spirographEnabled: false, nebulaEnabled: false,
+                lissajousEnabled: false, warpEnabled: false, causticsEnabled: false,
+                galaxyEnabled: false, electricFieldEnabled: false, stainedGlassEnabled: false,
+                topographicEnabled: false,
                 fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0.3, truchetWeight: 0.4, plasmaWeight: 0, moireWeight: 0.3,
                 phyllotaxisWeight: 0, dlaWeight: 0, mandelbrotWeight: 0, hexRelaxWeight: 0,
+                auroraWeight: 0, spirographWeight: 0, nebulaWeight: 0, lissajousWeight: 0,
+                warpWeight: 0, causticsWeight: 0, galaxyWeight: 0, electricFieldWeight: 0,
+                stainedGlassWeight: 0, topographicWeight: 0,
                 fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
                 kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
                 superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
                 phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
+                auroraBlendMode: 0, spirographBlendMode: 0, nebulaBlendMode: 0, lissajousBlendMode: 0,
+                warpBlendMode: 0, causticsBlendMode: 0, galaxyBlendMode: 0, electricFieldBlendMode: 0,
+                stainedGlassBlendMode: 0, topographicBlendMode: 0,
                 superM: 6, superN1: 1.0, superN2: 1.0, superN3: 1.0, shapeMix: 0.5,
                 tileScale: 10, rotationSeed: 2.5, lineWidth: 0.05,
                 lineDensity: 20, angleOffset: 0.785, waveSpeed: 0.3,
@@ -724,14 +989,24 @@ class GenerativeShaderApp {
                 truchetEnabled: false, plasmaEnabled: true, moireEnabled: false,
                 phyllotaxisEnabled: true, dlaEnabled: false, mandelbrotEnabled: true,
                 hexRelaxEnabled: false,
+                auroraEnabled: false, spirographEnabled: false, nebulaEnabled: false,
+                lissajousEnabled: false, warpEnabled: false, causticsEnabled: false,
+                galaxyEnabled: false, electricFieldEnabled: false, stainedGlassEnabled: false,
+                topographicEnabled: false,
                 fbmWeight: 0, voronoiWeight: 0, reactionWeight: 0, cellularWeight: 0,
                 kaleidoWeight: 0, fractalWeight: 0, curlFlowWeight: 0, metaballsWeight: 0,
                 superformulaWeight: 0, truchetWeight: 0, plasmaWeight: 0.3, moireWeight: 0,
                 phyllotaxisWeight: 0.3, dlaWeight: 0, mandelbrotWeight: 0.4, hexRelaxWeight: 0,
+                auroraWeight: 0, spirographWeight: 0, nebulaWeight: 0, lissajousWeight: 0,
+                warpWeight: 0, causticsWeight: 0, galaxyWeight: 0, electricFieldWeight: 0,
+                stainedGlassWeight: 0, topographicWeight: 0,
                 fbmBlendMode: 0, voronoiBlendMode: 0, reactionBlendMode: 0, cellularBlendMode: 0,
                 kaleidoBlendMode: 0, fractalBlendMode: 0, curlFlowBlendMode: 0, metaballsBlendMode: 0,
                 superformulaBlendMode: 0, truchetBlendMode: 0, plasmaBlendMode: 0, moireBlendMode: 0,
                 phyllotaxisBlendMode: 0, dlaBlendMode: 0, mandelbrotBlendMode: 0, hexRelaxBlendMode: 0,
+                auroraBlendMode: 0, spirographBlendMode: 0, nebulaBlendMode: 0, lissajousBlendMode: 0,
+                warpBlendMode: 0, causticsBlendMode: 0, galaxyBlendMode: 0, electricFieldBlendMode: 0,
+                stainedGlassBlendMode: 0, topographicBlendMode: 0,
                 plasmaFreq: 3.0, plasmaSpeed: 0.5, colorShift: 0.6,
                 pointCount: 200, spiralScale: 0.8, rotateSpeed: 0.1,
                 mandelbrotZoom: 1.5, mandelbrotCenterX: -0.5, mandelbrotCenterY: 0,
@@ -797,7 +1072,10 @@ class GenerativeShaderApp {
                 'fbmBlendMode', 'voronoiBlendMode', 'reactionBlendMode', 'cellularBlendMode',
                 'kaleidoBlendMode', 'fractalBlendMode', 'curlFlowBlendMode', 'metaballsBlendMode',
                 'superformulaBlendMode', 'truchetBlendMode', 'plasmaBlendMode', 'moireBlendMode',
-                'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode', 'hexRelaxBlendMode'
+                'phyllotaxisBlendMode', 'dlaBlendMode', 'mandelbrotBlendMode', 'hexRelaxBlendMode',
+                'auroraBlendMode', 'spirographBlendMode', 'nebulaBlendMode', 'lissajousBlendMode',
+                'warpBlendMode', 'causticsBlendMode', 'galaxyBlendMode', 'electricFieldBlendMode',
+                'stainedGlassBlendMode', 'topographicBlendMode'
             ];
             
             Object.keys(this.params).forEach(key => {

@@ -25,7 +25,17 @@ export class ShaderComposer {
             'phyllotaxis.frag',
             'dla.frag',
             'mandelbrot.frag',
-            'hexRelax.frag'
+            'hexRelax.frag',
+            'aurora.frag',
+            'spirograph.frag',
+            'nebula.frag',
+            'lissajous.frag',
+            'warp.frag',
+            'caustics.frag',
+            'galaxy.frag',
+            'electricField.frag',
+            'stainedGlass.frag',
+            'topographic.frag'
         ];
         
         await Promise.all(shaderFiles.map(async (file) => {
@@ -83,6 +93,16 @@ export class ShaderComposer {
             uniform float u_dlaEnabled;
             uniform float u_mandelbrotEnabled;
             uniform float u_hexRelaxEnabled;
+            uniform float u_auroraEnabled;
+            uniform float u_spirographEnabled;
+            uniform float u_nebulaEnabled;
+            uniform float u_lissajousEnabled;
+            uniform float u_warpEnabled;
+            uniform float u_causticsEnabled;
+            uniform float u_galaxyEnabled;
+            uniform float u_electricFieldEnabled;
+            uniform float u_stainedGlassEnabled;
+            uniform float u_topographicEnabled;
             
             // Master blend weights
             uniform float u_fbmWeight;
@@ -101,6 +121,16 @@ export class ShaderComposer {
             uniform float u_dlaWeight;
             uniform float u_mandelbrotWeight;
             uniform float u_hexRelaxWeight;
+            uniform float u_auroraWeight;
+            uniform float u_spirographWeight;
+            uniform float u_nebulaWeight;
+            uniform float u_lissajousWeight;
+            uniform float u_warpWeight;
+            uniform float u_causticsWeight;
+            uniform float u_galaxyWeight;
+            uniform float u_electricFieldWeight;
+            uniform float u_stainedGlassWeight;
+            uniform float u_topographicWeight;
             
             // Blend mode uniforms for each algorithm
             uniform int u_fbmBlendMode;
@@ -119,6 +149,16 @@ export class ShaderComposer {
             uniform int u_dlaBlendMode;
             uniform int u_mandelbrotBlendMode;
             uniform int u_hexRelaxBlendMode;
+            uniform int u_auroraBlendMode;
+            uniform int u_spirographBlendMode;
+            uniform int u_nebulaBlendMode;
+            uniform int u_lissajousBlendMode;
+            uniform int u_warpBlendMode;
+            uniform int u_causticsBlendMode;
+            uniform int u_galaxyBlendMode;
+            uniform int u_electricFieldBlendMode;
+            uniform int u_stainedGlassBlendMode;
+            uniform int u_topographicBlendMode;
             
             // Algorithm-specific uniforms
             uniform float u_fbmScale;
@@ -206,6 +246,64 @@ export class ShaderComposer {
             uniform float u_jitter;
             uniform float u_blendSharpness;
             
+            // Aurora parameters
+            uniform float u_auroraScale;
+            uniform float u_auroraSpeed;
+            uniform float u_auroraCurtain;
+            uniform float u_auroraHue;
+            
+            // Spirograph parameters
+            uniform float u_spiroR1;
+            uniform float u_spiroR2;
+            uniform float u_spiroD;
+            uniform float u_spiroSpeed;
+            
+            // Nebula parameters
+            uniform float u_nebulaScale;
+            uniform float u_nebulaDensity;
+            uniform float u_nebulaSpeed;
+            uniform float u_nebulaColor;
+            
+            // Lissajous parameters
+            uniform float u_lissajousA;
+            uniform float u_lissajousB;
+            uniform float u_lissajousDelta;
+            uniform float u_lissajousSpeed;
+            
+            // Warp parameters
+            uniform float u_warpSpeed;
+            uniform float u_warpTwist;
+            uniform float u_warpZoom;
+            uniform float u_warpRings;
+            
+            // Caustics parameters
+            uniform float u_causticScale;
+            uniform float u_causticSpeed;
+            uniform float u_causticIntensity;
+            
+            // Galaxy parameters
+            uniform float u_galaxyArms;
+            uniform float u_galaxyTwist;
+            uniform float u_galaxySpin;
+            uniform float u_galaxyStars;
+            
+            // Electric Field parameters
+            uniform float u_fieldCharges;
+            uniform float u_fieldStrength;
+            uniform float u_fieldSpeed;
+            
+            // Stained Glass parameters
+            uniform float u_glassScale;
+            uniform float u_glassBevel;
+            uniform float u_glassHue;
+            uniform float u_glassWarp;
+            
+            // Topographic parameters
+            uniform float u_topoScale;
+            uniform float u_topoLevels;
+            uniform float u_topoSpeed;
+            uniform float u_topoThickness;
+            
             // Global parameters
             uniform float u_timeScale;
             uniform float u_brightness;
@@ -235,6 +333,16 @@ export class ShaderComposer {
             ${this.shaders.dla || ''}
             ${this.shaders.mandelbrot || ''}
             ${this.shaders.hexRelax || ''}
+            ${this.shaders.aurora || ''}
+            ${this.shaders.spirograph || ''}
+            ${this.shaders.nebula || ''}
+            ${this.shaders.lissajous || ''}
+            ${this.shaders.warp || ''}
+            ${this.shaders.caustics || ''}
+            ${this.shaders.galaxy || ''}
+            ${this.shaders.electricField || ''}
+            ${this.shaders.stainedGlass || ''}
+            ${this.shaders.topographic || ''}
             
             // Blend mode functions
             vec3 blendNormal(vec3 base, vec3 blend, float weight) {
@@ -365,6 +473,16 @@ export class ShaderComposer {
                 vec3 dlaColor = u_dlaEnabled > 0.5 ? dlaShader(st, time) : vec3(0.0);
                 vec3 mandelbrotColor = u_mandelbrotEnabled > 0.5 ? mandelbrotShader(st, time) : vec3(0.0);
                 vec3 hexRelaxColor = u_hexRelaxEnabled > 0.5 ? hexRelaxShader(st, time) : vec3(0.0);
+                vec3 auroraColor = u_auroraEnabled > 0.5 ? auroraShader(st, time) : vec3(0.0);
+                vec3 spirographColor = u_spirographEnabled > 0.5 ? spirographShader(st, time) : vec3(0.0);
+                vec3 nebulaColor = u_nebulaEnabled > 0.5 ? nebulaShader(st, time) : vec3(0.0);
+                vec3 lissajousColor = u_lissajousEnabled > 0.5 ? lissajousShader(st, time) : vec3(0.0);
+                vec3 warpColor = u_warpEnabled > 0.5 ? warpShader(st, time) : vec3(0.0);
+                vec3 causticsColor = u_causticsEnabled > 0.5 ? causticsShader(st, time) : vec3(0.0);
+                vec3 galaxyColor = u_galaxyEnabled > 0.5 ? galaxyShader(st, time) : vec3(0.0);
+                vec3 electricFieldColor = u_electricFieldEnabled > 0.5 ? electricFieldShader(st, time) : vec3(0.0);
+                vec3 stainedGlassColor = u_stainedGlassEnabled > 0.5 ? stainedGlassShader(st, time) : vec3(0.0);
+                vec3 topographicColor = u_topographicEnabled > 0.5 ? topographicShader(st, time) : vec3(0.0);
                 
                 // DEBUG: Add a test pattern to see if shader is running
                 vec3 debugColor = vec3(st.x * 0.5 + 0.5, st.y * 0.5 + 0.5, sin(time) * 0.5 + 0.5);
@@ -386,6 +504,16 @@ export class ShaderComposer {
                 float dlaEffectiveWeight = u_dlaWeight * u_dlaEnabled;
                 float mandelbrotEffectiveWeight = u_mandelbrotWeight * u_mandelbrotEnabled;
                 float hexRelaxEffectiveWeight = u_hexRelaxWeight * u_hexRelaxEnabled;
+                float auroraEffectiveWeight = u_auroraWeight * u_auroraEnabled;
+                float spirographEffectiveWeight = u_spirographWeight * u_spirographEnabled;
+                float nebulaEffectiveWeight = u_nebulaWeight * u_nebulaEnabled;
+                float lissajousEffectiveWeight = u_lissajousWeight * u_lissajousEnabled;
+                float warpEffectiveWeight = u_warpWeight * u_warpEnabled;
+                float causticsEffectiveWeight = u_causticsWeight * u_causticsEnabled;
+                float galaxyEffectiveWeight = u_galaxyWeight * u_galaxyEnabled;
+                float electricFieldEffectiveWeight = u_electricFieldWeight * u_electricFieldEnabled;
+                float stainedGlassEffectiveWeight = u_stainedGlassWeight * u_stainedGlassEnabled;
+                float topographicEffectiveWeight = u_topographicWeight * u_topographicEnabled;
                 
                 // Blend all shaders with effective weights
                 float totalWeight = fbmEffectiveWeight + voronoiEffectiveWeight + reactionEffectiveWeight + 
@@ -393,7 +521,11 @@ export class ShaderComposer {
                                   curlFlowEffectiveWeight + metaballsEffectiveWeight + superformulaEffectiveWeight +
                                   truchetEffectiveWeight + plasmaEffectiveWeight + moireEffectiveWeight + 
                                   phyllotaxisEffectiveWeight + dlaEffectiveWeight + mandelbrotEffectiveWeight +
-                                  hexRelaxEffectiveWeight + 0.001;
+                                  hexRelaxEffectiveWeight +
+                                  auroraEffectiveWeight + spirographEffectiveWeight + nebulaEffectiveWeight +
+                                  lissajousEffectiveWeight + warpEffectiveWeight + causticsEffectiveWeight +
+                                  galaxyEffectiveWeight + electricFieldEffectiveWeight + stainedGlassEffectiveWeight +
+                                  topographicEffectiveWeight + 0.001;
                 
                 // Start with black color and accumulate blended results
                 vec3 color = vec3(0.0);
@@ -446,6 +578,36 @@ export class ShaderComposer {
                 }
                 if (hexRelaxEffectiveWeight > 0.0) {
                     color = applyBlendMode(color, hexRelaxColor, hexRelaxEffectiveWeight / totalWeight, u_hexRelaxBlendMode);
+                }
+                if (auroraEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, auroraColor, auroraEffectiveWeight / totalWeight, u_auroraBlendMode);
+                }
+                if (spirographEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, spirographColor, spirographEffectiveWeight / totalWeight, u_spirographBlendMode);
+                }
+                if (nebulaEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, nebulaColor, nebulaEffectiveWeight / totalWeight, u_nebulaBlendMode);
+                }
+                if (lissajousEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, lissajousColor, lissajousEffectiveWeight / totalWeight, u_lissajousBlendMode);
+                }
+                if (warpEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, warpColor, warpEffectiveWeight / totalWeight, u_warpBlendMode);
+                }
+                if (causticsEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, causticsColor, causticsEffectiveWeight / totalWeight, u_causticsBlendMode);
+                }
+                if (galaxyEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, galaxyColor, galaxyEffectiveWeight / totalWeight, u_galaxyBlendMode);
+                }
+                if (electricFieldEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, electricFieldColor, electricFieldEffectiveWeight / totalWeight, u_electricFieldBlendMode);
+                }
+                if (stainedGlassEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, stainedGlassColor, stainedGlassEffectiveWeight / totalWeight, u_stainedGlassBlendMode);
+                }
+                if (topographicEffectiveWeight > 0.0) {
+                    color = applyBlendMode(color, topographicColor, topographicEffectiveWeight / totalWeight, u_topographicBlendMode);
                 }
                 
                 // DEBUG: If no shaders are active, show debug pattern

@@ -108,5 +108,73 @@ export const guiConfig = {
         hexRelaxFolder.add(params, 'relaxSteps', 0, 5, 1).onChange(v => uniforms.u_relaxSteps.value = v);
         hexRelaxFolder.add(params, 'jitter', 0, 0.5).onChange(v => uniforms.u_jitter.value = v);
         hexRelaxFolder.add(params, 'blendSharpness', 0.1, 3).onChange(v => uniforms.u_blendSharpness.value = v);
+        
+        // Aurora parameters
+        const auroraFolder = gui.addFolder('Aurora');
+        auroraFolder.add(params, 'auroraScale', 0.5, 5).onChange(v => uniforms.u_auroraScale.value = v);
+        auroraFolder.add(params, 'auroraSpeed', 0, 2).onChange(v => uniforms.u_auroraSpeed.value = v);
+        auroraFolder.add(params, 'auroraCurtain', 0.5, 5).onChange(v => uniforms.u_auroraCurtain.value = v);
+        auroraFolder.add(params, 'auroraHue', 0, 1).onChange(v => uniforms.u_auroraHue.value = v);
+        
+        // Spirograph parameters
+        const spirographFolder = gui.addFolder('Spirograph');
+        spirographFolder.add(params, 'spiroR1', 1, 8).onChange(v => uniforms.u_spiroR1.value = v);
+        spirographFolder.add(params, 'spiroR2', 0.5, 5).onChange(v => uniforms.u_spiroR2.value = v);
+        spirographFolder.add(params, 'spiroD', 0.5, 5).onChange(v => uniforms.u_spiroD.value = v);
+        spirographFolder.add(params, 'spiroSpeed', 0, 2).onChange(v => uniforms.u_spiroSpeed.value = v);
+        
+        // Nebula parameters
+        const nebulaFolder = gui.addFolder('Nebula');
+        nebulaFolder.add(params, 'nebulaScale', 0.5, 5).onChange(v => uniforms.u_nebulaScale.value = v);
+        nebulaFolder.add(params, 'nebulaDensity', 0.5, 3).onChange(v => uniforms.u_nebulaDensity.value = v);
+        nebulaFolder.add(params, 'nebulaSpeed', 0, 1).onChange(v => uniforms.u_nebulaSpeed.value = v);
+        nebulaFolder.add(params, 'nebulaColor', 0, 1).onChange(v => uniforms.u_nebulaColor.value = v);
+        
+        // Lissajous parameters
+        const lissajousFolder = gui.addFolder('Lissajous');
+        lissajousFolder.add(params, 'lissajousA', 1, 7).onChange(v => uniforms.u_lissajousA.value = v);
+        lissajousFolder.add(params, 'lissajousB', 1, 7).onChange(v => uniforms.u_lissajousB.value = v);
+        lissajousFolder.add(params, 'lissajousDelta', 0, 6.28).onChange(v => uniforms.u_lissajousDelta.value = v);
+        lissajousFolder.add(params, 'lissajousSpeed', 0, 2).onChange(v => uniforms.u_lissajousSpeed.value = v);
+        
+        // Warp parameters
+        const warpFolder = gui.addFolder('Warp');
+        warpFolder.add(params, 'warpSpeed', 0, 2).onChange(v => uniforms.u_warpSpeed.value = v);
+        warpFolder.add(params, 'warpTwist', 0, 5).onChange(v => uniforms.u_warpTwist.value = v);
+        warpFolder.add(params, 'warpZoom', 0.1, 3).onChange(v => uniforms.u_warpZoom.value = v);
+        warpFolder.add(params, 'warpRings', 1, 15).onChange(v => uniforms.u_warpRings.value = v);
+        
+        // Caustics parameters
+        const causticsFolder = gui.addFolder('Caustics');
+        causticsFolder.add(params, 'causticScale', 1, 8).onChange(v => uniforms.u_causticScale.value = v);
+        causticsFolder.add(params, 'causticSpeed', 0, 2).onChange(v => uniforms.u_causticSpeed.value = v);
+        causticsFolder.add(params, 'causticIntensity', 0.5, 3).onChange(v => uniforms.u_causticIntensity.value = v);
+        
+        // Galaxy parameters
+        const galaxyFolder = gui.addFolder('Galaxy');
+        galaxyFolder.add(params, 'galaxyArms', 1, 4, 1).onChange(v => uniforms.u_galaxyArms.value = v);
+        galaxyFolder.add(params, 'galaxyTwist', 0.5, 8).onChange(v => uniforms.u_galaxyTwist.value = v);
+        galaxyFolder.add(params, 'galaxySpin', 0, 1).onChange(v => uniforms.u_galaxySpin.value = v);
+        galaxyFolder.add(params, 'galaxyStars', 1, 3, 1).onChange(v => uniforms.u_galaxyStars.value = v);
+        
+        // Electric Field parameters
+        const electricFieldFolder = gui.addFolder('Electric Field');
+        electricFieldFolder.add(params, 'fieldCharges', 2, 8, 1).onChange(v => uniforms.u_fieldCharges.value = v);
+        electricFieldFolder.add(params, 'fieldStrength', 0.05, 1).onChange(v => uniforms.u_fieldStrength.value = v);
+        electricFieldFolder.add(params, 'fieldSpeed', 0, 2).onChange(v => uniforms.u_fieldSpeed.value = v);
+        
+        // Stained Glass parameters
+        const stainedGlassFolder = gui.addFolder('Stained Glass');
+        stainedGlassFolder.add(params, 'glassScale', 1, 10).onChange(v => uniforms.u_glassScale.value = v);
+        stainedGlassFolder.add(params, 'glassBevel', 0.01, 0.2).onChange(v => uniforms.u_glassBevel.value = v);
+        stainedGlassFolder.add(params, 'glassHue', 0, 1).onChange(v => uniforms.u_glassHue.value = v);
+        stainedGlassFolder.add(params, 'glassWarp', 0, 1).onChange(v => uniforms.u_glassWarp.value = v);
+        
+        // Topographic parameters
+        const topographicFolder = gui.addFolder('Topographic');
+        topographicFolder.add(params, 'topoScale', 0.5, 5).onChange(v => uniforms.u_topoScale.value = v);
+        topographicFolder.add(params, 'topoLevels', 5, 30).onChange(v => uniforms.u_topoLevels.value = v);
+        topographicFolder.add(params, 'topoSpeed', 0, 1).onChange(v => uniforms.u_topoSpeed.value = v);
+        topographicFolder.add(params, 'topoThickness', 0.01, 0.15).onChange(v => uniforms.u_topoThickness.value = v);
     }
 };
