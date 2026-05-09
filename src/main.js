@@ -257,7 +257,11 @@ class GenerativeShaderApp {
             
             // Auto-animation
             autoAnimate: false,
-            autoAnimateSpeed: 1.0
+            autoAnimateSpeed: 1.0,
+            
+            // Auto-randomize
+            autoRandomize: false,
+            autoRandomizeInterval: 5
         };
         
         return params;
@@ -300,6 +304,19 @@ class GenerativeShaderApp {
 
         // Handle resize
         window.addEventListener('resize', () => this.onWindowResize());
+
+        // Boot defaults: enable auto-animation + auto-randomize, then trigger an initial randomize
+        this.params.autoAnimate = true;
+        this.material.uniforms.u_autoAnimate.value = 1.0;
+        const autoAnimateCtl = this.findController('autoAnimate');
+        if (autoAnimateCtl) autoAnimateCtl.setValue(true);
+        
+        this.params.autoRandomize = true;
+        const autoRandomizeCtl = this.findController('autoRandomize');
+        if (autoRandomizeCtl) autoRandomizeCtl.setValue(true);
+        this.updateAutoRandomizeTimer();
+        
+        this.randomize();
 
         // Start animation loop
         this.animate();
@@ -542,10 +559,16 @@ class GenerativeShaderApp {
     }
 
     setupGUI() {
-        this.gui = new GUI();
-        
-        // Master blend weights
-        const blendFolder = this.gui.addFolder('Shader Blend Weights');
+        // ─── Panel 1: Individual Shader Controls (left side, starts closed) ───
+        this.gui = new GUI({ title: 'Shader Controls', closeFolders: true, autoPlace: false });
+        this.gui.domElement.style.position = 'fixed';
+        this.gui.domElement.style.top = '0';
+        this.gui.domElement.style.left = '0';
+        this.gui.domElement.style.maxHeight = '100vh';
+        this.gui.domElement.style.overflowY = 'auto';
+        this.gui.domElement.style.zIndex = '1000';
+        document.body.appendChild(this.gui.domElement);
+        this.gui.close(); // Start collapsed
         
         // Blend mode names for display
         const blendModes = {
@@ -565,134 +588,64 @@ class GenerativeShaderApp {
             'Vivid Light': 13
         };
         
-        // Add toggles and weights for each shader
-        blendFolder.add(this.params, 'fbmEnabled').name('FBM On/Off').onChange(v => this.material.uniforms.u_fbmEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'fbmWeight', 0, 1).name('FBM Weight').onChange(v => this.material.uniforms.u_fbmWeight.value = v);
-        blendFolder.add(this.params, 'fbmBlendMode', blendModes).name('FBM Blend').onChange(v => this.material.uniforms.u_fbmBlendMode.value = parseInt(v));
+        // Each shader gets its own folder with enable/weight/blend + params
+        const addShaderFolder = (name, enableKey, weightKey, blendKey, uniformPrefix) => {
+            const folder = this.gui.addFolder(name);
+            folder.add(this.params, enableKey).name('Enabled').onChange(v => this.material.uniforms[`u_${enableKey}`].value = v ? 1.0 : 0.0);
+            folder.add(this.params, weightKey, 0, 1).name('Weight').onChange(v => this.material.uniforms[`u_${weightKey}`].value = v);
+            folder.add(this.params, blendKey, blendModes).name('Blend Mode').onChange(v => this.material.uniforms[`u_${blendKey}`].value = parseInt(v));
+            return folder;
+        };
         
-        blendFolder.add(this.params, 'voronoiEnabled').name('Voronoi On/Off').onChange(v => this.material.uniforms.u_voronoiEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'voronoiWeight', 0, 1).name('Voronoi Weight').onChange(v => this.material.uniforms.u_voronoiWeight.value = v);
-        blendFolder.add(this.params, 'voronoiBlendMode', blendModes).name('Voronoi Blend').onChange(v => this.material.uniforms.u_voronoiBlendMode.value = parseInt(v));
+        addShaderFolder('FBM', 'fbmEnabled', 'fbmWeight', 'fbmBlendMode');
+        addShaderFolder('Voronoi', 'voronoiEnabled', 'voronoiWeight', 'voronoiBlendMode');
+        addShaderFolder('Reaction Diffusion', 'reactionEnabled', 'reactionWeight', 'reactionBlendMode');
+        addShaderFolder('Cellular', 'cellularEnabled', 'cellularWeight', 'cellularBlendMode');
+        addShaderFolder('Kaleidoscope', 'kaleidoEnabled', 'kaleidoWeight', 'kaleidoBlendMode');
+        addShaderFolder('Fractal', 'fractalEnabled', 'fractalWeight', 'fractalBlendMode');
+        addShaderFolder('Curl Flow', 'curlFlowEnabled', 'curlFlowWeight', 'curlFlowBlendMode');
+        addShaderFolder('Metaballs', 'metaballsEnabled', 'metaballsWeight', 'metaballsBlendMode');
+        addShaderFolder('Superformula', 'superformulaEnabled', 'superformulaWeight', 'superformulaBlendMode');
+        addShaderFolder('Truchet', 'truchetEnabled', 'truchetWeight', 'truchetBlendMode');
+        addShaderFolder('Plasma', 'plasmaEnabled', 'plasmaWeight', 'plasmaBlendMode');
+        addShaderFolder('Moire', 'moireEnabled', 'moireWeight', 'moireBlendMode');
+        addShaderFolder('Phyllotaxis', 'phyllotaxisEnabled', 'phyllotaxisWeight', 'phyllotaxisBlendMode');
+        addShaderFolder('DLA', 'dlaEnabled', 'dlaWeight', 'dlaBlendMode');
+        addShaderFolder('Mandelbrot', 'mandelbrotEnabled', 'mandelbrotWeight', 'mandelbrotBlendMode');
+        addShaderFolder('Hex Relax', 'hexRelaxEnabled', 'hexRelaxWeight', 'hexRelaxBlendMode');
+        addShaderFolder('Aurora', 'auroraEnabled', 'auroraWeight', 'auroraBlendMode');
+        addShaderFolder('Spirograph', 'spirographEnabled', 'spirographWeight', 'spirographBlendMode');
+        addShaderFolder('Nebula', 'nebulaEnabled', 'nebulaWeight', 'nebulaBlendMode');
+        addShaderFolder('Lissajous', 'lissajousEnabled', 'lissajousWeight', 'lissajousBlendMode');
+        addShaderFolder('Warp', 'warpEnabled', 'warpWeight', 'warpBlendMode');
+        addShaderFolder('Caustics', 'causticsEnabled', 'causticsWeight', 'causticsBlendMode');
+        addShaderFolder('Galaxy', 'galaxyEnabled', 'galaxyWeight', 'galaxyBlendMode');
+        addShaderFolder('Electric Field', 'electricFieldEnabled', 'electricFieldWeight', 'electricFieldBlendMode');
+        addShaderFolder('Stained Glass', 'stainedGlassEnabled', 'stainedGlassWeight', 'stainedGlassBlendMode');
+        addShaderFolder('Topographic', 'topographicEnabled', 'topographicWeight', 'topographicBlendMode');
         
-        blendFolder.add(this.params, 'reactionEnabled').name('Reaction On/Off').onChange(v => this.material.uniforms.u_reactionEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'reactionWeight', 0, 1).name('Reaction Weight').onChange(v => this.material.uniforms.u_reactionWeight.value = v);
-        blendFolder.add(this.params, 'reactionBlendMode', blendModes).name('Reaction Blend').onChange(v => this.material.uniforms.u_reactionBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'cellularEnabled').name('Cellular On/Off').onChange(v => this.material.uniforms.u_cellularEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'cellularWeight', 0, 1).name('Cellular Weight').onChange(v => this.material.uniforms.u_cellularWeight.value = v);
-        blendFolder.add(this.params, 'cellularBlendMode', blendModes).name('Cellular Blend').onChange(v => this.material.uniforms.u_cellularBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'kaleidoEnabled').name('Kaleido On/Off').onChange(v => this.material.uniforms.u_kaleidoEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'kaleidoWeight', 0, 1).name('Kaleido Weight').onChange(v => this.material.uniforms.u_kaleidoWeight.value = v);
-        blendFolder.add(this.params, 'kaleidoBlendMode', blendModes).name('Kaleido Blend').onChange(v => this.material.uniforms.u_kaleidoBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'fractalEnabled').name('Fractal On/Off').onChange(v => this.material.uniforms.u_fractalEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'fractalWeight', 0, 1).name('Fractal Weight').onChange(v => this.material.uniforms.u_fractalWeight.value = v);
-        blendFolder.add(this.params, 'fractalBlendMode', blendModes).name('Fractal Blend').onChange(v => this.material.uniforms.u_fractalBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'curlFlowEnabled').name('Curl Flow On/Off').onChange(v => this.material.uniforms.u_curlFlowEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'curlFlowWeight', 0, 1).name('Curl Flow Weight').onChange(v => this.material.uniforms.u_curlFlowWeight.value = v);
-        blendFolder.add(this.params, 'curlFlowBlendMode', blendModes).name('Curl Flow Blend').onChange(v => this.material.uniforms.u_curlFlowBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'metaballsEnabled').name('Metaballs On/Off').onChange(v => this.material.uniforms.u_metaballsEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'metaballsWeight', 0, 1).name('Metaballs Weight').onChange(v => this.material.uniforms.u_metaballsWeight.value = v);
-        blendFolder.add(this.params, 'metaballsBlendMode', blendModes).name('Metaballs Blend').onChange(v => this.material.uniforms.u_metaballsBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'superformulaEnabled').name('Superformula On/Off').onChange(v => this.material.uniforms.u_superformulaEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'superformulaWeight', 0, 1).name('Superformula Weight').onChange(v => this.material.uniforms.u_superformulaWeight.value = v);
-        blendFolder.add(this.params, 'superformulaBlendMode', blendModes).name('Superformula Blend').onChange(v => this.material.uniforms.u_superformulaBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'truchetEnabled').name('Truchet On/Off').onChange(v => this.material.uniforms.u_truchetEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'truchetWeight', 0, 1).name('Truchet Weight').onChange(v => this.material.uniforms.u_truchetWeight.value = v);
-        blendFolder.add(this.params, 'truchetBlendMode', blendModes).name('Truchet Blend').onChange(v => this.material.uniforms.u_truchetBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'plasmaEnabled').name('Plasma On/Off').onChange(v => this.material.uniforms.u_plasmaEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'plasmaWeight', 0, 1).name('Plasma Weight').onChange(v => this.material.uniforms.u_plasmaWeight.value = v);
-        blendFolder.add(this.params, 'plasmaBlendMode', blendModes).name('Plasma Blend').onChange(v => this.material.uniforms.u_plasmaBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'moireEnabled').name('Moire On/Off').onChange(v => this.material.uniforms.u_moireEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'moireWeight', 0, 1).name('Moire Weight').onChange(v => this.material.uniforms.u_moireWeight.value = v);
-        blendFolder.add(this.params, 'moireBlendMode', blendModes).name('Moire Blend').onChange(v => this.material.uniforms.u_moireBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'phyllotaxisEnabled').name('Phyllotaxis On/Off').onChange(v => this.material.uniforms.u_phyllotaxisEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'phyllotaxisWeight', 0, 1).name('Phyllotaxis Weight').onChange(v => this.material.uniforms.u_phyllotaxisWeight.value = v);
-        blendFolder.add(this.params, 'phyllotaxisBlendMode', blendModes).name('Phyllotaxis Blend').onChange(v => this.material.uniforms.u_phyllotaxisBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'dlaEnabled').name('DLA On/Off').onChange(v => this.material.uniforms.u_dlaEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'dlaWeight', 0, 1).name('DLA Weight').onChange(v => this.material.uniforms.u_dlaWeight.value = v);
-        blendFolder.add(this.params, 'dlaBlendMode', blendModes).name('DLA Blend').onChange(v => this.material.uniforms.u_dlaBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'mandelbrotEnabled').name('Mandelbrot On/Off').onChange(v => this.material.uniforms.u_mandelbrotEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'mandelbrotWeight', 0, 1).name('Mandelbrot Weight').onChange(v => this.material.uniforms.u_mandelbrotWeight.value = v);
-        blendFolder.add(this.params, 'mandelbrotBlendMode', blendModes).name('Mandelbrot Blend').onChange(v => this.material.uniforms.u_mandelbrotBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'hexRelaxEnabled').name('Hex Relax On/Off').onChange(v => this.material.uniforms.u_hexRelaxEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'hexRelaxWeight', 0, 1).name('Hex Relax Weight').onChange(v => this.material.uniforms.u_hexRelaxWeight.value = v);
-        blendFolder.add(this.params, 'hexRelaxBlendMode', blendModes).name('Hex Relax Blend').onChange(v => this.material.uniforms.u_hexRelaxBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'auroraEnabled').name('Aurora On/Off').onChange(v => this.material.uniforms.u_auroraEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'auroraWeight', 0, 1).name('Aurora Weight').onChange(v => this.material.uniforms.u_auroraWeight.value = v);
-        blendFolder.add(this.params, 'auroraBlendMode', blendModes).name('Aurora Blend').onChange(v => this.material.uniforms.u_auroraBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'spirographEnabled').name('Spirograph On/Off').onChange(v => this.material.uniforms.u_spirographEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'spirographWeight', 0, 1).name('Spirograph Weight').onChange(v => this.material.uniforms.u_spirographWeight.value = v);
-        blendFolder.add(this.params, 'spirographBlendMode', blendModes).name('Spirograph Blend').onChange(v => this.material.uniforms.u_spirographBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'nebulaEnabled').name('Nebula On/Off').onChange(v => this.material.uniforms.u_nebulaEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'nebulaWeight', 0, 1).name('Nebula Weight').onChange(v => this.material.uniforms.u_nebulaWeight.value = v);
-        blendFolder.add(this.params, 'nebulaBlendMode', blendModes).name('Nebula Blend').onChange(v => this.material.uniforms.u_nebulaBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'lissajousEnabled').name('Lissajous On/Off').onChange(v => this.material.uniforms.u_lissajousEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'lissajousWeight', 0, 1).name('Lissajous Weight').onChange(v => this.material.uniforms.u_lissajousWeight.value = v);
-        blendFolder.add(this.params, 'lissajousBlendMode', blendModes).name('Lissajous Blend').onChange(v => this.material.uniforms.u_lissajousBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'warpEnabled').name('Warp On/Off').onChange(v => this.material.uniforms.u_warpEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'warpWeight', 0, 1).name('Warp Weight').onChange(v => this.material.uniforms.u_warpWeight.value = v);
-        blendFolder.add(this.params, 'warpBlendMode', blendModes).name('Warp Blend').onChange(v => this.material.uniforms.u_warpBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'causticsEnabled').name('Caustics On/Off').onChange(v => this.material.uniforms.u_causticsEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'causticsWeight', 0, 1).name('Caustics Weight').onChange(v => this.material.uniforms.u_causticsWeight.value = v);
-        blendFolder.add(this.params, 'causticsBlendMode', blendModes).name('Caustics Blend').onChange(v => this.material.uniforms.u_causticsBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'galaxyEnabled').name('Galaxy On/Off').onChange(v => this.material.uniforms.u_galaxyEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'galaxyWeight', 0, 1).name('Galaxy Weight').onChange(v => this.material.uniforms.u_galaxyWeight.value = v);
-        blendFolder.add(this.params, 'galaxyBlendMode', blendModes).name('Galaxy Blend').onChange(v => this.material.uniforms.u_galaxyBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'electricFieldEnabled').name('Electric Field On/Off').onChange(v => this.material.uniforms.u_electricFieldEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'electricFieldWeight', 0, 1).name('Electric Field Weight').onChange(v => this.material.uniforms.u_electricFieldWeight.value = v);
-        blendFolder.add(this.params, 'electricFieldBlendMode', blendModes).name('Electric Field Blend').onChange(v => this.material.uniforms.u_electricFieldBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'stainedGlassEnabled').name('Stained Glass On/Off').onChange(v => this.material.uniforms.u_stainedGlassEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'stainedGlassWeight', 0, 1).name('Stained Glass Weight').onChange(v => this.material.uniforms.u_stainedGlassWeight.value = v);
-        blendFolder.add(this.params, 'stainedGlassBlendMode', blendModes).name('Stained Glass Blend').onChange(v => this.material.uniforms.u_stainedGlassBlendMode.value = parseInt(v));
-        
-        blendFolder.add(this.params, 'topographicEnabled').name('Topographic On/Off').onChange(v => this.material.uniforms.u_topographicEnabled.value = v ? 1.0 : 0.0);
-        blendFolder.add(this.params, 'topographicWeight', 0, 1).name('Topographic Weight').onChange(v => this.material.uniforms.u_topographicWeight.value = v);
-        blendFolder.add(this.params, 'topographicBlendMode', blendModes).name('Topographic Blend').onChange(v => this.material.uniforms.u_topographicBlendMode.value = parseInt(v));
-        
-        blendFolder.open();
-        
-        // Algorithm-specific parameters
+        // Algorithm-specific parameters (adds sliders into the same gui panel)
         guiConfig.setupGUI(this.gui, this.params, this.material.uniforms);
         
-        // Global parameters
-        const globalFolder = this.gui.addFolder('Global');
-        globalFolder.add(this.params, 'timeScale', 0, 5).onChange(v => this.material.uniforms.u_timeScale.value = v);
-        globalFolder.add(this.params, 'brightness', 0, 2).onChange(v => this.material.uniforms.u_brightness.value = v);
-        globalFolder.add(this.params, 'contrast', 0, 2).onChange(v => this.material.uniforms.u_contrast.value = v);
-        globalFolder.add(this.params, 'saturation', 0, 2).onChange(v => this.material.uniforms.u_saturation.value = v);
-        globalFolder.add(this.params, 'autoAnimate').name('Auto-Animation On/Off').onChange(v => {
+        // ─── Panel 2: Global & Utils (right side) ───
+        this.guiGlobal = new GUI({ title: 'Global & Utils' });
+        
+        // Quick Controls (top, open) — randomize, auto-animation, auto-randomize
+        const quickFolder = this.guiGlobal.addFolder('Quick Controls');
+        quickFolder.add({ randomize: () => this.randomize() }, 'randomize').name('Randomize');
+        quickFolder.add(this.params, 'autoAnimate').name('Auto-Animation On/Off').onChange(v => {
             this.material.uniforms.u_autoAnimate.value = v ? 1.0 : 0.0;
             if (v) {
-                // Regenerate random increments when turning on
                 this.initializeAutoAnimateIncrements();
             }
         });
-        globalFolder.add(this.params, 'autoAnimateSpeed', 0, 5).name('Auto-Animation Speed').onChange(v => this.material.uniforms.u_autoAnimateSpeed.value = v);
+        quickFolder.add(this.params, 'autoAnimateSpeed', 0, 5).name('Auto-Animation Speed').onChange(v => this.material.uniforms.u_autoAnimateSpeed.value = v);
+        quickFolder.add(this.params, 'autoRandomize').name('Auto-Randomize On/Off').onChange(v => this.updateAutoRandomizeTimer());
+        quickFolder.add(this.params, 'autoRandomizeInterval', 1, 20, 1).name('Auto-Randomize (sec)').onChange(() => this.updateAutoRandomizeTimer());
+        quickFolder.open();
         
-        // Utility buttons
-        const utilsFolder = this.gui.addFolder('Utils');
-        utilsFolder.add({ randomize: () => this.randomize() }, 'randomize').name('Randomize');
+        // Utils (collapsed by default) — presets and save
+        const utilsFolder = this.guiGlobal.addFolder('Utils');
         utilsFolder.add({ preset1: () => this.loadPreset(0) }, 'preset1').name('Preset 1');
         utilsFolder.add({ preset2: () => this.loadPreset(1) }, 'preset2').name('Preset 2');
         utilsFolder.add({ preset3: () => this.loadPreset(2) }, 'preset3').name('Preset 3');
@@ -700,15 +653,23 @@ class GenerativeShaderApp {
         utilsFolder.add({ preset5: () => this.loadPreset(4) }, 'preset5').name('Preset 5');
         utilsFolder.add({ preset6: () => this.loadPreset(5) }, 'preset6').name('Preset 6');
         utilsFolder.add({ save: () => this.saveParams() }, 'save').name('Save JSON');
+        utilsFolder.close();
         
-        // Add GitHub link with icon
-        const githubButton = utilsFolder.add({ github: () => {
+        // Global parameters
+        const globalFolder = this.guiGlobal.addFolder('Global');
+        globalFolder.add(this.params, 'timeScale', 0, 5).onChange(v => this.material.uniforms.u_timeScale.value = v);
+        globalFolder.add(this.params, 'brightness', 0, 2).onChange(v => this.material.uniforms.u_brightness.value = v);
+        globalFolder.add(this.params, 'contrast', 0, 2).onChange(v => this.material.uniforms.u_contrast.value = v);
+        globalFolder.add(this.params, 'saturation', 0, 2).onChange(v => this.material.uniforms.u_saturation.value = v);
+        globalFolder.open();
+        
+        // GitHub link — bottom of the panel, outside any folder
+        this.guiGlobal.add({ github: () => {
             window.open('https://github.com/GregP-Navdna/InfiniBlend', '_blank');
         }}, 'github').name('');
         
-        // Customize the GitHub button to show an icon
         setTimeout(() => {
-            const controller = utilsFolder.controllers.find(c => c.property === 'github');
+            const controller = this.guiGlobal.controllers.find(c => c.property === 'github');
             if (controller && controller.domElement) {
                 const nameElement = controller.domElement.querySelector('.name');
                 if (nameElement) {
@@ -722,9 +683,24 @@ class GenerativeShaderApp {
                 }
             }
         }, 100);
-        
-        // Keep all folders closed by default
-        // utilsFolder.open();
+    }
+    
+    updateAutoRandomizeTimer() {
+        // Clear any existing timer
+        if (this.autoRandomizeTimer) {
+            clearInterval(this.autoRandomizeTimer);
+            this.autoRandomizeTimer = null;
+        }
+        // Start a new timer if enabled
+        if (this.params.autoRandomize) {
+            const intervalMs = Math.max(1, this.params.autoRandomizeInterval) * 1000;
+            this.autoRandomizeTimer = setInterval(() => this.randomize(), intervalMs);
+        }
+    }
+
+    findController(key) {
+        return this.gui.controllersRecursive().find(c => c.property === key) ||
+               this.guiGlobal.controllersRecursive().find(c => c.property === key);
     }
 
     initializeAutoAnimateIncrements() {
@@ -732,6 +708,7 @@ class GenerativeShaderApp {
         const paramKeys = Object.keys(this.params);
         const excludedParams = [
             'autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation',
+            'autoRandomize', 'autoRandomizeInterval',
             // Exclude all blend mode parameters
             'fbmBlendMode', 'voronoiBlendMode', 'reactionBlendMode', 'cellularBlendMode',
             'kaleidoBlendMode', 'fractalBlendMode', 'curlFlowBlendMode', 'metaballsBlendMode',
@@ -783,7 +760,7 @@ class GenerativeShaderApp {
         booleanParams.forEach(key => {
             const value = Math.random() > 0.5;
             this.params[key] = value;
-            const controller = this.gui.controllersRecursive().find(c => c.property === key);
+            const controller = this.findController(key);
             if (controller) {
                 controller.setValue(value);
             }
@@ -806,21 +783,36 @@ class GenerativeShaderApp {
             // Random blend mode between 0-13 (14 blend modes total)
             const value = Math.floor(Math.random() * 14);
             this.params[key] = value;
-            const controller = this.gui.controllersRecursive().find(c => c.property === key);
+            const controller = this.findController(key);
             if (controller) {
                 controller.setValue(value);
             }
         });
         
+        // Custom randomize ranges for global params (tolerable visual ranges)
+        const randomizeRanges = {
+            timeScale:        { min: 0.5,  max: 5.0  },
+            brightness:       { min: 1.0,  max: 1.75 },
+            contrast:         { min: 0.8,  max: 1.5  },
+            saturation:       { min: 0.5,  max: 2.0  },
+            autoAnimateSpeed: { min: 0.25, max: 4.0  }
+        };
+        
+        // Params that should never be randomized (meta controls)
+        const skipRandomize = ['autoRandomizeInterval'];
+        
         // Randomize numeric parameters
         Object.keys(this.params).forEach(key => {
-            // Skip boolean parameters and blend modes as they're already handled
+            // Skip boolean parameters, blend modes, and meta controls
             if (booleanParams.includes(key) || blendModeParams.includes(key)) return;
+            if (skipRandomize.includes(key)) return;
             
-            const controller = this.gui.controllersRecursive().find(c => c.property === key);
+            const controller = this.findController(key);
             if (controller && controller._min !== undefined && controller._max !== undefined) {
-                const min = controller._min;
-                const max = controller._max;
+                // Use custom range if defined, otherwise use the controller's full range
+                const range = randomizeRanges[key];
+                const min = range ? range.min : controller._min;
+                const max = range ? range.max : controller._max;
                 const value = min + Math.random() * (max - min);
                 this.params[key] = value;
                 controller.setValue(value);
@@ -1021,7 +1013,7 @@ class GenerativeShaderApp {
             Object.keys(preset).forEach(key => {
                 if (this.params.hasOwnProperty(key)) {
                     this.params[key] = preset[key];
-                    const controller = this.gui.controllersRecursive().find(c => c.property === key);
+                    const controller = this.findController(key);
                     if (controller) controller.setValue(preset[key]);
                 }
             });
@@ -1068,6 +1060,7 @@ class GenerativeShaderApp {
         if (this.params.autoAnimate) {
             const excludedParams = [
                 'autoAnimate', 'autoAnimateSpeed', 'brightness', 'contrast', 'saturation',
+                'autoRandomize', 'autoRandomizeInterval',
                 // Exclude all blend mode parameters
                 'fbmBlendMode', 'voronoiBlendMode', 'reactionBlendMode', 'cellularBlendMode',
                 'kaleidoBlendMode', 'fractalBlendMode', 'curlFlowBlendMode', 'metaballsBlendMode',
@@ -1084,7 +1077,7 @@ class GenerativeShaderApp {
                     let value = this.params[key] + increment * this.params.autoAnimateSpeed;
                     
                     // Find the controller to get min/max bounds
-                    const controller = this.gui.controllersRecursive().find(c => c.property === key);
+                    const controller = this.findController(key);
                     if (controller && controller._min !== undefined && controller._max !== undefined) {
                         // Bounce off boundaries
                         if (value > controller._max || value < controller._min) {
